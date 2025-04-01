@@ -79,11 +79,11 @@ This project includes GitHub Actions workflows for automated building, testing, 
 
 ### Build and Test Workflow
 
-The `build-and-test.yml` workflow automatically builds and tests the project on every push to the main branch and pull requests. It also creates NuGet packages and uploads them as artifacts for inspection.
+The `build-and-test.yml` workflow automatically builds and tests the project on every push to the main branch and pull requests. It also creates NuGet packages and uploads them as artifacts for inspection. This workflow uses the latest GitHub Actions (v4) for checkout, .NET setup, and artifact upload.
 
 ### Publish NuGet Package Workflow
 
-The `publish-nuget.yml` workflow automatically publishes the package to NuGet.org when a new release is created on GitHub.
+The `publish-nuget.yml` workflow automatically publishes the package to NuGet.org when a new release is created on GitHub. This workflow also uses the latest GitHub Actions (v4) for checkout and .NET setup.
 
 To use this workflow:
 

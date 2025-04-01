@@ -124,8 +124,8 @@ if (combinedDataResult.Success)
 
 This project uses GitHub Actions for continuous integration and deployment:
 
-- **Build and Test**: Automatically builds and tests the project on every push to the main branch and pull requests.
-- **Publish NuGet Package**: Automatically publishes the package to NuGet.org when a new release is created on GitHub.
+- **Build and Test**: Automatically builds and tests the project on every push to the main branch and pull requests. Uses the latest GitHub Actions (v4) for checkout, .NET setup, and artifact upload.
+- **Publish NuGet Package**: Automatically publishes the package to NuGet.org when a new release is created on GitHub. Also uses the latest GitHub Actions (v4).
 
 To use these workflows:
 
