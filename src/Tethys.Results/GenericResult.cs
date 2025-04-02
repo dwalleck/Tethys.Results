@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PhoenixLabs.Results
+namespace Tethys.Results
 {
     public sealed class Result<T> : IResult
     {

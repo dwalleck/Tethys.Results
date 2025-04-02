@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PhoenixLabs.Results
+namespace Tethys.Results
 {
     /// <summary>
     /// Represents the result of an operation that returns data of type <typeparamref name="T"/>.

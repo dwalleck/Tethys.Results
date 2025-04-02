@@ -1,6 +1,6 @@
-# PhoenixLabs.Results Test Package
+# Tethys.Results Test Package
 
-This is a simple test project to verify that the PhoenixLabs.Results package is working correctly after installation.
+This is a simple test project to verify that the Tethys.Results package is working correctly after installation.
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ For convenience, we've included scripts to run the test:
 
 ### Manual Steps
 
-1. Make sure the PhoenixLabs.Results package has been published to NuGet.org or your local feed.
+1. Make sure the Tethys.Results package has been published to NuGet.org or your local feed.
 
 2. If using a local feed, update the `test-package.csproj` file to point to your local feed:
 
@@ -43,7 +43,7 @@ dotnet run
 ## Expected Output
 
 ```
-Testing PhoenixLabs.Results package...
+Testing Tethys.Results package...
 Success result: Success=True, Message=Operation completed successfully
 Fail result: Success=False, Message=Something went wrong
 Data result: Success=True, Data=42

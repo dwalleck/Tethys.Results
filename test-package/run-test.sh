@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Running PhoenixLabs.Results test package..."
+echo "Running Tethys.Results test package..."
 echo
 
 # Restore packages

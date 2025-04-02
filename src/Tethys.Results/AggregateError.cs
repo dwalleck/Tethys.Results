@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PhoenixLabs.Results
+namespace Tethys.Results
 {
     /// <summary>
     /// Represents an exception that aggregates multiple errors.

@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PhoenixLabs.Results" Version="1.0.0" />
+    <PackageReference Include="Tethys.Results" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

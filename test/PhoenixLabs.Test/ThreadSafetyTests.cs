@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PhoenixLabs.Results;
+using Tethys.Results;
 using TUnit;
 
 namespace PhoenixLabs.Test

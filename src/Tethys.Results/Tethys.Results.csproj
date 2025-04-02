@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     
     <!-- Package Metadata -->
-    <PackageId>PhoenixLabs.Results</PackageId>
+    <PackageId>Tethys.Results</PackageId>
     <Version>1.0.0</Version>
     <Authors>PhoenixLabs</Authors>
     <Company>PhoenixLabs</Company>
@@ -15,7 +15,7 @@
     
     <!-- Source Control -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <RepositoryUrl>https://github.com/yourusername/phoenixlabs.results</RepositoryUrl>
+    <RepositoryUrl>https://github.com/yourusername/Tethys.Results</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     
     <!-- Documentation -->

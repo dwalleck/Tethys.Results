@@ -29,7 +29,7 @@ jobs:
       
     - name: Pack
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: dotnet pack src/PhoenixLabs.Results/PhoenixLabs.Results.csproj -c Release -o nupkgs
+      run: dotnet pack src/Tethys.Results/Tethys.Results.csproj -c Release -o nupkgs
       
     - name: Upload NuGet package artifact
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'

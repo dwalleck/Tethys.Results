@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace PhoenixLabs.Results
+namespace Tethys.Results
 {
 
     /// <summary>

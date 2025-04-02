@@ -1,5 +1,5 @@
 using System;
-using PhoenixLabs.Results;
+using Tethys.Results;
 
 namespace TestPackage
 {
@@ -7,7 +7,7 @@ namespace TestPackage
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Testing PhoenixLabs.Results package...");
+            Console.WriteLine("Testing Tethys.Results package...");
             
             // Test basic Result
             var successResult = Result.Ok("Operation completed successfully");

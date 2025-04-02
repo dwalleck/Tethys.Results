@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using PhoenixLabs.Results;
+using Tethys.Results;
 using TUnit;
 
 namespace PhoenixLabs.Test

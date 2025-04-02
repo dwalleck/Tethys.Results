@@ -1,4 +1,4 @@
-Write-Host "Running PhoenixLabs.Results test package..." -ForegroundColor Cyan
+Write-Host "Running Tethys.Results test package..." -ForegroundColor Cyan
 Write-Host ""
 
 # Restore packages

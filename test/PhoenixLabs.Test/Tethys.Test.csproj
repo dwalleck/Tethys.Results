@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\PhoenixLabs.Results\PhoenixLabs.Results.csproj" />
+    <ProjectReference Include="..\..\src\Tethys.Results\Tethys.Results.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,7 +5,7 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/src/">
-    <Project Path="src/PhoenixLabs.Results/PhoenixLabs.Results.csproj" />
+    <Project Path="src/Tethys.Results/Tethys.Results.csproj" />
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/PhoenixLabs.Test/PhoenixLabs.Test.csproj" />

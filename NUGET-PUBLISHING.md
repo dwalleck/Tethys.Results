@@ -1,6 +1,6 @@
-# Publishing PhoenixLabs.Results to NuGet
+# Publishing Tethys.Results to NuGet
 
-This guide explains how to pack and publish the PhoenixLabs.Results library to NuGet.
+This guide explains how to pack and publish the Tethys.Results library to NuGet.
 
 > **Note:** This project includes GitHub Actions workflows for automated building, testing, and publishing. See the [Automated Publishing](#automated-publishing) section below for details.
 
@@ -15,7 +15,7 @@ This guide explains how to pack and publish the PhoenixLabs.Results library to N
 1. Navigate to the project directory:
 
 ```bash
-cd src/PhoenixLabs.Results
+cd src/Tethys.Results
 ```
 
 2. Build the project in Release mode:
@@ -37,7 +37,7 @@ This will create both the main package (.nupkg) and the symbols package (.snupkg
 1. Push the package to NuGet.org:
 
 ```bash
-dotnet nuget push ../../nupkgs/PhoenixLabs.Results.1.0.0.nupkg --api-key YOUR_API_KEY --source https://api.nuget.org/v3/index.json
+dotnet nuget push ../../nupkgs/Tethys.Results.1.0.0.nupkg --api-key YOUR_API_KEY --source https://api.nuget.org/v3/index.json
 ```
 
 Replace `YOUR_API_KEY` with your NuGet API key.
@@ -45,7 +45,7 @@ Replace `YOUR_API_KEY` with your NuGet API key.
 2. Push the symbols package to NuGet.org:
 
 ```bash
-dotnet nuget push ../../nupkgs/PhoenixLabs.Results.1.0.0.snupkg --api-key YOUR_API_KEY --source https://api.nuget.org/v3/index.json
+dotnet nuget push ../../nupkgs/Tethys.Results.1.0.0.snupkg --api-key YOUR_API_KEY --source https://api.nuget.org/v3/index.json
 ```
 
 ## Publishing to a Local Feed or Private Repository
@@ -53,7 +53,7 @@ dotnet nuget push ../../nupkgs/PhoenixLabs.Results.1.0.0.snupkg --api-key YOUR_A
 If you want to publish to a local feed or private repository:
 
 ```bash
-dotnet nuget push ../../nupkgs/PhoenixLabs.Results.1.0.0.nupkg --source "YOUR_LOCAL_FEED_PATH"
+dotnet nuget push ../../nupkgs/Tethys.Results.1.0.0.nupkg --source "YOUR_LOCAL_FEED_PATH"
 ```
 
 Replace `YOUR_LOCAL_FEED_PATH` with the path to your local feed or the URL of your private repository.
@@ -62,7 +62,7 @@ Replace `YOUR_LOCAL_FEED_PATH` with the path to your local feed or the URL of yo
 
 After publishing, you can verify that your package is available:
 
-1. For NuGet.org, visit https://www.nuget.org/packages/PhoenixLabs.Results
+1. For NuGet.org, visit https://www.nuget.org/packages/Tethys.Results
 2. For a local feed, check the feed directory or use the NuGet Package Manager in Visual Studio
 
 ## Updating the Package

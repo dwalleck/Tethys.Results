@@ -1,5 +1,5 @@
 @echo off
-echo Running PhoenixLabs.Results test package...
+echo Running Tethys.Results test package...
 echo.
 
 REM Restore packages

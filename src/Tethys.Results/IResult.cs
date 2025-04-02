@@ -1,6 +1,6 @@
 using System;
 
-namespace PhoenixLabs.Results
+namespace Tethys.Results
 {
     public interface IResult
     {

@@ -1,4 +1,4 @@
-# PhoenixLabs.Results
+# Tethys.Results
 
 A lightweight, thread-safe Result pattern implementation for .NET that provides a clean way to handle operation results with success/failure states, error messages, and optional data.
 
@@ -18,13 +18,13 @@ A lightweight, thread-safe Result pattern implementation for .NET that provides 
 Install the package via NuGet:
 
 ```bash
-dotnet add package PhoenixLabs.Results
+dotnet add package Tethys.Results
 ```
 
 Or via the NuGet Package Manager:
 
 ```
-Install-Package PhoenixLabs.Results
+Install-Package Tethys.Results
 ```
 
 ## Usage
@@ -32,7 +32,7 @@ Install-Package PhoenixLabs.Results
 ### Basic Usage
 
 ```csharp
-using PhoenixLabs.Results;
+using Tethys.Results;
 
 // Create a successful result
 var successResult = Result.Ok("Operation completed successfully");
