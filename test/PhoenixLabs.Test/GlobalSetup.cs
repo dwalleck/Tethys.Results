@@ -4,7 +4,7 @@
 [assembly: Retry(3)]
 [assembly: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 
-namespace PhoenixLabs.Test;
+namespace Tethys.Test;
 
 public class GlobalHooks
 {

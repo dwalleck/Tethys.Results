@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Tethys.Results;
 using TUnit;
 
-namespace PhoenixLabs.Test
+namespace Tethys.Test
 {
     public class ThreadSafetyTests
     {

@@ -1,4 +1,4 @@
-﻿namespace PhoenixLabs.Test.Data;
+﻿namespace Tethys.Test.Data;
 
 public class DataGenerator : DataSourceGeneratorAttribute<int, int, int>
 {

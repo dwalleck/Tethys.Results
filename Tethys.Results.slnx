@@ -8,6 +8,6 @@
     <Project Path="src/Tethys.Results/Tethys.Results.csproj" />
   </Folder>
   <Folder Name="/test/">
-    <Project Path="test/PhoenixLabs.Test/PhoenixLabs.Test.csproj" />
+    <Project Path="test/Tethys.Test/Tethys.Test.csproj" />
   </Folder>
 </Solution>

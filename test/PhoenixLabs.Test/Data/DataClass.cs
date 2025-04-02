@@ -1,6 +1,6 @@
 ﻿using TUnit.Core.Interfaces;
 
-namespace PhoenixLabs.Test;
+namespace Tethys.Test;
 
 public class DataClass : IAsyncInitializer, IAsyncDisposable
 {

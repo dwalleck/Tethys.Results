@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tethys.Results", "src\Tethy
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{0C88DD14-F956-CE84-757C-A364CCF449FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tethys.Test", "test\PhoenixLabs.Test\Tethys.Test.csproj", "{9F1EE8C4-31D8-431C-A502-4FC6A2797190}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tethys.Test", "test\Tethys.Test\Tethys.Test.csproj", "{9F1EE8C4-31D8-431C-A502-4FC6A2797190}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

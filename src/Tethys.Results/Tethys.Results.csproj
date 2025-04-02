@@ -6,8 +6,8 @@
     <!-- Package Metadata -->
     <PackageId>Tethys.Results</PackageId>
     <Version>1.0.0</Version>
-    <Authors>PhoenixLabs</Authors>
-    <Company>PhoenixLabs</Company>
+    <Authors>Tethys</Authors>
+    <Company>Tethys</Company>
     <Description>A lightweight, thread-safe Result pattern implementation for .NET that provides a clean way to handle operation results with success/failure states, error messages, and optional data.</Description>
     <PackageTags>result;results;error-handling;functional;railway-oriented-programming</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
