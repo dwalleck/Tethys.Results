@@ -5,7 +5,7 @@
     
     <!-- Package Metadata -->
     <PackageId>Tethys.Results</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Authors>Tethys</Authors>
     <Company>Tethys</Company>
     <Description>A lightweight, thread-safe Result pattern implementation for .NET that provides a clean way to handle operation results with success/failure states, error messages, and optional data.</Description>
@@ -15,7 +15,7 @@
     
     <!-- Source Control -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <RepositoryUrl>https://github.com/yourusername/Tethys.Results</RepositoryUrl>
+    <RepositoryUrl>https://github.com/dwalleck/Tethys.Results</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     
     <!-- Documentation -->

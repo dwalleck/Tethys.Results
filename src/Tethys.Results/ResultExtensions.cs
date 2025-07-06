@@ -179,6 +179,276 @@ namespace Tethys.Results
             var result = await resultTask;
             return result.Success ? await next(result.Data) : Result<TOut>.Fail(result.Message, result.Exception);
         }
+
+        #region OnSuccess Callback Methods
+
+        /// <summary>
+        /// Executes the specified callback if the result is successful.
+        /// </summary>
+        /// <param name="result">The result to check.</param>
+        /// <param name="callback">The callback to execute if the result is successful.</param>
+        /// <returns>The original result, allowing for method chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static Result OnSuccess(this Result result, Action callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            if (result.Success)
+            {
+                callback();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Executes the specified callback with the result data if the result is successful.
+        /// </summary>
+        /// <typeparam name="T">The type of data in the result.</typeparam>
+        /// <param name="result">The result to check.</param>
+        /// <param name="callback">The callback to execute with the result data if the result is successful.</param>
+        /// <returns>The original result, allowing for method chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static Result<T> OnSuccess<T>(this Result<T> result, Action<T> callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            if (result.Success)
+            {
+                callback(result.Data);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Asynchronously executes the specified callback if the result is successful.
+        /// </summary>
+        /// <param name="result">The result to check.</param>
+        /// <param name="callback">The async callback to execute if the result is successful.</param>
+        /// <returns>A task that represents the asynchronous operation, containing the original result.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static async Task<Result> OnSuccessAsync(this Result result, Func<Task> callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            if (result.Success)
+            {
+                await callback().ConfigureAwait(false);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Asynchronously executes the specified callback with the result data if the result is successful.
+        /// </summary>
+        /// <typeparam name="T">The type of data in the result.</typeparam>
+        /// <param name="result">The result to check.</param>
+        /// <param name="callback">The async callback to execute with the result data if the result is successful.</param>
+        /// <returns>A task that represents the asynchronous operation, containing the original result.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static async Task<Result<T>> OnSuccessAsync<T>(this Result<T> result, Func<T, Task> callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            if (result.Success)
+            {
+                await callback(result.Data).ConfigureAwait(false);
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region OnFailure Callback Methods
+
+        /// <summary>
+        /// Executes the specified callback if the result is a failure.
+        /// </summary>
+        /// <param name="result">The result to check.</param>
+        /// <param name="callback">The callback to execute with the exception if the result is a failure.</param>
+        /// <returns>The original result, allowing for method chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static Result OnFailure(this Result result, Action<Exception> callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            if (!result.Success)
+            {
+                callback(result.Exception);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Executes the specified callback if the result is a failure.
+        /// </summary>
+        /// <typeparam name="T">The type of data in the result.</typeparam>
+        /// <param name="result">The result to check.</param>
+        /// <param name="callback">The callback to execute with the exception if the result is a failure.</param>
+        /// <returns>The original result, allowing for method chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static Result<T> OnFailure<T>(this Result<T> result, Action<Exception> callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            if (!result.Success)
+            {
+                callback(result.Exception);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Asynchronously executes the specified callback if the result is a failure.
+        /// </summary>
+        /// <param name="result">The result to check.</param>
+        /// <param name="callback">The async callback to execute with the exception if the result is a failure.</param>
+        /// <returns>A task that represents the asynchronous operation, containing the original result.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static async Task<Result> OnFailureAsync(this Result result, Func<Exception, Task> callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            if (!result.Success)
+            {
+                await callback(result.Exception).ConfigureAwait(false);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Asynchronously executes the specified callback if the result is a failure.
+        /// </summary>
+        /// <typeparam name="T">The type of data in the result.</typeparam>
+        /// <param name="result">The result to check.</param>
+        /// <param name="callback">The async callback to execute with the exception if the result is a failure.</param>
+        /// <returns>A task that represents the asynchronous operation, containing the original result.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static async Task<Result<T>> OnFailureAsync<T>(this Result<T> result, Func<Exception, Task> callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            if (!result.Success)
+            {
+                await callback(result.Exception).ConfigureAwait(false);
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region OnBoth Callback Methods
+
+        /// <summary>
+        /// Executes the specified callback regardless of whether the result is successful or failed.
+        /// This is useful for logging or cleanup operations.
+        /// </summary>
+        /// <param name="result">The result to pass to the callback.</param>
+        /// <param name="callback">The callback to execute with the result.</param>
+        /// <returns>The original result, allowing for method chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static Result OnBoth(this Result result, Action<Result> callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            callback(result);
+            return result;
+        }
+
+        /// <summary>
+        /// Executes the specified callback regardless of whether the result is successful or failed.
+        /// This is useful for logging or cleanup operations.
+        /// </summary>
+        /// <typeparam name="T">The type of data in the result.</typeparam>
+        /// <param name="result">The result to pass to the callback.</param>
+        /// <param name="callback">The callback to execute with the result.</param>
+        /// <returns>The original result, allowing for method chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static Result<T> OnBoth<T>(this Result<T> result, Action<Result<T>> callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            callback(result);
+            return result;
+        }
+
+        /// <summary>
+        /// Asynchronously executes the specified callback regardless of whether the result is successful or failed.
+        /// This is useful for logging or cleanup operations.
+        /// </summary>
+        /// <param name="result">The result to pass to the callback.</param>
+        /// <param name="callback">The async callback to execute with the result.</param>
+        /// <returns>A task that represents the asynchronous operation, containing the original result.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static async Task<Result> OnBothAsync(this Result result, Func<Result, Task> callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            await callback(result).ConfigureAwait(false);
+            return result;
+        }
+
+        /// <summary>
+        /// Asynchronously executes the specified callback regardless of whether the result is successful or failed.
+        /// This is useful for logging or cleanup operations.
+        /// </summary>
+        /// <typeparam name="T">The type of data in the result.</typeparam>
+        /// <param name="result">The result to pass to the callback.</param>
+        /// <param name="callback">The async callback to execute with the result.</param>
+        /// <returns>A task that represents the asynchronous operation, containing the original result.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when callback is null.</exception>
+        public static async Task<Result<T>> OnBothAsync<T>(this Result<T> result, Func<Result<T>, Task> callback)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            await callback(result).ConfigureAwait(false);
+            return result;
+        }
+
+        #endregion
     }
 
 }

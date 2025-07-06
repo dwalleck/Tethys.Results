@@ -2,6 +2,9 @@ using System;
 
 namespace Tethys.Results
 {
+    /// <summary>
+    /// Defines the common interface for all result types.
+    /// </summary>
     public interface IResult
     {
         /// <summary>

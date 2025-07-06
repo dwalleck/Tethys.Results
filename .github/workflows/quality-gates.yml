@@ -1,0 +1,138 @@
+name: Quality Gates
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-first-verification:
+    name: Verify Test-First Development
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Need full history for test-first verification
+    
+    - name: Verify Test-First Development
+      run: |
+        chmod +x ./scripts/verify-test-first.sh
+        ./scripts/verify-test-first.sh
+
+  code-coverage:
+    name: Code Coverage Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Check Code Coverage
+      run: |
+        chmod +x ./scripts/check-coverage-threshold.sh
+        ./scripts/check-coverage-threshold.sh
+    
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report
+        path: coverage/
+
+  documentation-verification:
+    name: Verify Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    
+    - name: Verify Documentation
+      run: |
+        chmod +x ./scripts/verify-documentation.sh
+        ./scripts/verify-documentation.sh
+
+  build-warnings-check:
+    name: No Compiler Warnings
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    
+    - name: Build with warnings as errors
+      run: |
+        dotnet build -warnaserror -p:TreatWarningsAsErrors=true
+    
+    - name: Run tests
+      run: dotnet test --no-build --verbosity normal
+
+  quality-summary:
+    name: Quality Summary
+    runs-on: ubuntu-latest
+    needs: [test-first-verification, code-coverage, documentation-verification, build-warnings-check]
+    if: always()
+    
+    steps:
+    - name: Quality Gate Summary
+      run: |
+        echo "## 📊 Quality Gate Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Check job results
+        if [ "${{ needs.test-first-verification.result }}" == "success" ]; then
+          echo "✅ Test-First Development: PASSED" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Test-First Development: FAILED" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.code-coverage.result }}" == "success" ]; then
+          echo "✅ Code Coverage (>95%): PASSED" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Code Coverage (>95%): FAILED" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.documentation-verification.result }}" == "success" ]; then
+          echo "✅ Documentation: PASSED" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Documentation: FAILED" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.build-warnings-check.result }}" == "success" ]; then
+          echo "✅ No Compiler Warnings: PASSED" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ No Compiler Warnings: FAILED" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        # Overall result
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ needs.test-first-verification.result }}" == "success" ] && \
+           [ "${{ needs.code-coverage.result }}" == "success" ] && \
+           [ "${{ needs.documentation-verification.result }}" == "success" ] && \
+           [ "${{ needs.build-warnings-check.result }}" == "success" ]; then
+          echo "### ✅ All Quality Gates Passed!" >> $GITHUB_STEP_SUMMARY
+          exit 0
+        else
+          echo "### ❌ Quality Gates Failed!" >> $GITHUB_STEP_SUMMARY
+          echo "Please review the failed checks above." >> $GITHUB_STEP_SUMMARY
+          exit 1
+        fi

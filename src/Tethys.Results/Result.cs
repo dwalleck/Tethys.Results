@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Tethys.Results
 {
     /// <summary>
-    /// Represents the result of an operation that returns data of type <typeparamref name="T"/>.
+    /// Represents the result of an operation without returning data.
     /// This class is immutable and thread-safe.
     /// </summary>
-    /// <typeparam name="T">The type of data returned by the operation.</typeparam>
-
-    public sealed class Result : IResult
+    public sealed class Result : IResult, IEquatable<Result>
     {
         /// <summary>
         /// Gets a value indicating whether the operation was successful.
@@ -159,6 +158,278 @@ namespace Tethys.Results
                 : new AggregateError(errorMessages);
 
             return Fail("One or more operations failed", aggregateError);
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="Result"/> is equal to this instance.
+        /// </summary>
+        /// <param name="other">The <see cref="Result"/> to compare with this instance.</param>
+        /// <returns><c>true</c> if the specified <see cref="Result"/> is equal to this instance; otherwise, <c>false</c>.</returns>
+        public bool Equals(Result other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Success == other.Success &&
+                   Message == other.Message &&
+                   EqualityComparer<Exception>.Default.Equals(Exception, other.Exception);
+        }
+
+        /// <summary>
+        /// Determines whether the specified object is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The object to compare with this instance.</param>
+        /// <returns><c>true</c> if the specified object is equal to this instance; otherwise, <c>false</c>.</returns>
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Result);
+        }
+
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Success.GetHashCode();
+                hashCode = (hashCode * 397) ^ (Message?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (Exception?.GetHashCode() ?? 0);
+                return hashCode;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether two <see cref="Result"/> instances are equal.
+        /// </summary>
+        /// <param name="left">The first <see cref="Result"/> to compare.</param>
+        /// <param name="right">The second <see cref="Result"/> to compare.</param>
+        /// <returns><c>true</c> if the two <see cref="Result"/> instances are equal; otherwise, <c>false</c>.</returns>
+        public static bool operator ==(Result left, Result right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// Determines whether two <see cref="Result"/> instances are not equal.
+        /// </summary>
+        /// <param name="left">The first <see cref="Result"/> to compare.</param>
+        /// <param name="right">The second <see cref="Result"/> to compare.</param>
+        /// <returns><c>true</c> if the two <see cref="Result"/> instances are not equal; otherwise, <c>false</c>.</returns>
+        public static bool operator !=(Result left, Result right)
+        {
+            return !(left == right);
+        }
+
+        /// <summary>
+        /// Pattern matches on the result, executing the appropriate function based on success or failure.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the value returned by the functions.</typeparam>
+        /// <param name="onSuccess">The function to execute if the result is successful.</param>
+        /// <param name="onFailure">The function to execute if the result is a failure.</param>
+        /// <returns>The value returned by either the onSuccess or onFailure function.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when either onSuccess or onFailure is null.</exception>
+        public TResult Match<TResult>(
+            Func<TResult> onSuccess,
+            Func<Exception, TResult> onFailure)
+        {
+            if (onSuccess == null)
+            {
+                throw new ArgumentNullException(nameof(onSuccess), "onSuccess function cannot be null");
+            }
+
+            if (onFailure == null)
+            {
+                throw new ArgumentNullException(nameof(onFailure), "onFailure function cannot be null");
+            }
+
+            return Success ? onSuccess() : onFailure(Exception);
+        }
+
+        /// <summary>
+        /// Asynchronously pattern matches on the result, executing the appropriate function based on success or failure.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the value returned by the functions.</typeparam>
+        /// <param name="onSuccess">The async function to execute if the result is successful.</param>
+        /// <param name="onFailure">The async function to execute if the result is a failure.</param>
+        /// <returns>A task representing the asynchronous operation that returns the value from either the onSuccess or onFailure function.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when either onSuccess or onFailure is null.</exception>
+        public async Task<TResult> MatchAsync<TResult>(
+            Func<Task<TResult>> onSuccess,
+            Func<Exception, Task<TResult>> onFailure)
+        {
+            if (onSuccess == null)
+            {
+                throw new ArgumentNullException(nameof(onSuccess), "onSuccess function cannot be null");
+            }
+
+            if (onFailure == null)
+            {
+                throw new ArgumentNullException(nameof(onFailure), "onFailure function cannot be null");
+            }
+
+            return Success ? await onSuccess() : await onFailure(Exception);
+        }
+
+        /// <summary>
+        /// Transforms the exception of a failed result using the provided mapping function.
+        /// </summary>
+        /// <param name="mapper">The function to transform the exception.</param>
+        /// <returns>A new Result with the transformed exception if this is a failure, or the same successful result if this is a success.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when mapper is null.</exception>
+        public Result MapError(Func<Exception, Exception> mapper)
+        {
+            if (mapper == null)
+            {
+                throw new ArgumentNullException(nameof(mapper), "mapper function cannot be null");
+            }
+
+            return Success ? this : new Result(false, Message, mapper(Exception));
+        }
+
+        /// <summary>
+        /// Asynchronously transforms the exception of a failed result using the provided mapping function.
+        /// </summary>
+        /// <param name="mapper">The async function to transform the exception.</param>
+        /// <returns>A task representing the asynchronous operation that returns a new Result with the transformed exception if this is a failure, or the same successful result if this is a success.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when mapper is null.</exception>
+        public async Task<Result> MapErrorAsync(Func<Exception, Task<Exception>> mapper)
+        {
+            if (mapper == null)
+            {
+                throw new ArgumentNullException(nameof(mapper), "mapper function cannot be null");
+            }
+
+            return Success ? this : new Result(false, Message, await mapper(Exception));
+        }
+
+        /// <summary>
+        /// Executes an action and returns a Result indicating success or failure.
+        /// </summary>
+        /// <param name="action">The action to execute.</param>
+        /// <returns>A successful Result if the action completes without throwing an exception; otherwise, a failed Result containing the exception.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when action is null.</exception>
+        public static Result Try(Action action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action), "action cannot be null");
+            }
+
+            try
+            {
+                action();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Fail(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Executes an action and returns a Result indicating success or failure with custom messages.
+        /// </summary>
+        /// <param name="action">The action to execute.</param>
+        /// <param name="successMessage">The message to use when the action succeeds.</param>
+        /// <param name="errorMessageFormat">Optional format string for the error message. If null, the exception message is used.</param>
+        /// <returns>A Result indicating success or failure.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when action or successMessage is null.</exception>
+        public static Result Try(Action action, string successMessage, string errorMessageFormat = null)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action), "action cannot be null");
+            }
+
+            if (successMessage == null)
+            {
+                throw new ArgumentNullException(nameof(successMessage), "successMessage cannot be null");
+            }
+
+            try
+            {
+                action();
+                return Ok(successMessage);
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = errorMessageFormat != null 
+                    ? string.Format(errorMessageFormat, ex.Message)
+                    : ex.Message;
+                return Fail(errorMessage, ex);
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously executes an action and returns a Result indicating success or failure.
+        /// </summary>
+        /// <param name="asyncAction">The async action to execute.</param>
+        /// <returns>A task representing the asynchronous operation that returns a successful Result if the action completes without throwing an exception; otherwise, a failed Result containing the exception.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when asyncAction is null.</exception>
+        public static async Task<Result> TryAsync(Func<Task> asyncAction)
+        {
+            if (asyncAction == null)
+            {
+                throw new ArgumentNullException(nameof(asyncAction), "asyncAction cannot be null");
+            }
+
+            try
+            {
+                await asyncAction();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Fail(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously executes an action and returns a Result indicating success or failure with custom messages.
+        /// </summary>
+        /// <param name="asyncAction">The async action to execute.</param>
+        /// <param name="successMessage">The message to use when the action succeeds.</param>
+        /// <param name="errorMessageFormat">Optional format string for the error message. If null, the exception message is used.</param>
+        /// <returns>A task representing the asynchronous operation that returns a Result indicating success or failure.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when asyncAction or successMessage is null.</exception>
+        public static async Task<Result> TryAsync(Func<Task> asyncAction, string successMessage, string errorMessageFormat = null)
+        {
+            if (asyncAction == null)
+            {
+                throw new ArgumentNullException(nameof(asyncAction), "asyncAction cannot be null");
+            }
+
+            if (successMessage == null)
+            {
+                throw new ArgumentNullException(nameof(successMessage), "successMessage cannot be null");
+            }
+
+            try
+            {
+                await asyncAction();
+                return Ok(successMessage);
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = errorMessageFormat != null 
+                    ? string.Format(errorMessageFormat, ex.Message)
+                    : ex.Message;
+                return Fail(errorMessage, ex);
+            }
         }
     }
 
