@@ -138,21 +138,37 @@ namespace Tethys.Results
                 throw new ArgumentNullException(nameof(results), "Results collection cannot be null");
             }
 
-            var resultsList = results.ToList();
-            if (resultsList.Count == 0)
+            // Use a single pass through the enumerable to collect failures
+            var errorMessages = new List<string>();
+            var exceptions = new List<Exception>();
+            var hasAnyResult = false;
+
+            foreach (var result in results)
+            {
+                hasAnyResult = true;
+                
+                if (!result.Success)
+                {
+                    errorMessages.Add(result.Message);
+                    if (result.Exception != null)
+                    {
+                        exceptions.Add(result.Exception);
+                    }
+                }
+            }
+
+            if (!hasAnyResult)
             {
                 throw new ArgumentException("Results collection cannot be empty", nameof(results));
             }
 
-            var failedResults = resultsList.Where(r => !r.Success).ToList();
-            if (failedResults.Count == 0)
+            // If no failures found, all operations succeeded
+            if (errorMessages.Count == 0)
             {
                 return Ok("All operations completed successfully");
             }
 
-            var errorMessages = failedResults.Select(r => r.Message).ToList();
-            var exceptions = failedResults.Where(r => r.Exception != null).Select(r => r.Exception).ToList();
-
+            // Create appropriate aggregate error
             var aggregateError = exceptions.Count > 0
                 ? new AggregateError(errorMessages.First(), exceptions)
                 : new AggregateError(errorMessages);
@@ -281,7 +297,7 @@ namespace Tethys.Results
                 throw new ArgumentNullException(nameof(onFailure), "onFailure function cannot be null");
             }
 
-            return Success ? await onSuccess() : await onFailure(Exception);
+            return Success ? await onSuccess().ConfigureAwait(false) : await onFailure(Exception).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -313,7 +329,7 @@ namespace Tethys.Results
                 throw new ArgumentNullException(nameof(mapper), "mapper function cannot be null");
             }
 
-            return Success ? this : new Result(false, Message, await mapper(Exception));
+            return Success ? this : new Result(false, Message, await mapper(Exception).ConfigureAwait(false));
         }
 
         /// <summary>
@@ -389,7 +405,7 @@ namespace Tethys.Results
 
             try
             {
-                await asyncAction();
+                await asyncAction().ConfigureAwait(false);
                 return Ok();
             }
             catch (Exception ex)
@@ -420,7 +436,7 @@ namespace Tethys.Results
 
             try
             {
-                await asyncAction();
+                await asyncAction().ConfigureAwait(false);
                 return Ok(successMessage);
             }
             catch (Exception ex)

@@ -93,8 +93,8 @@ jobs:
       
       - name: Check Coverage Threshold
         run: |
-          # Fail if coverage < 95% for new code
-          ./scripts/check-coverage-threshold.sh
+          # Fail if coverage < 90% for new code
+          ./scripts/check-coverage.sh
       
       - name: Verify Documentation
         run: |
@@ -237,7 +237,7 @@ for file in $(git diff --name-only HEAD~1); do
 done
 ```
 
-### check-coverage-threshold.sh
+### check-coverage.sh
 ```bash
 #!/bin/bash
 # Check code coverage meets threshold
@@ -433,7 +433,7 @@ git diff --cached
 
 # Run verification scripts
 ./scripts/verify-test-first.sh
-./scripts/check-coverage-threshold.sh
+./scripts/check-coverage.sh
 ./scripts/verify-documentation.sh
 ```
 
@@ -500,9 +500,23 @@ Always think about the developer experience when designing APIs!
 
 When working as part of a multi-agent team, you MUST follow this workflow:
 
-#### 1. Branch Creation (SHOW OUTPUT)
+#### 1. Git Worktree Setup (PREFERRED METHOD)
 ```bash
-# MANDATORY: Create your feature branch
+# PREFERRED: Use git worktree for truly parallel work
+# This creates a separate working directory, avoiding conflicts
+git worktree add ../Tethys.Results-agent-N feature/agent-N-description
+cd ../Tethys.Results-agent-N
+pwd  # MUST show this output
+# Expected output: /path/to/Tethys.Results-agent-N
+
+# Verify worktree is set up correctly
+git worktree list  # MUST show this output
+# Expected output should show main tree and new worktree
+```
+
+#### Alternative: Branch Creation (if worktree not available)
+```bash
+# FALLBACK: Create your feature branch (only if worktree cannot be used)
 git checkout -b feature/agent-N-description
 git branch --show-current  # MUST show this output
 # Expected output: feature/agent-N-description
@@ -524,7 +538,7 @@ echo "## $(date) - Completed: [description]" >> progress/agent-N-status.md
 
 # MANDATORY: Run verification scripts
 ./scripts/verify-test-first.sh     # MUST show output
-./scripts/check-coverage-threshold.sh  # MUST show output
+./scripts/check-coverage.sh  # MUST show output
 ./scripts/verify-documentation.sh      # MUST show output
 ```
 
@@ -550,18 +564,47 @@ touch progress/READY-agent-N
 ls progress/READY-*  # MUST show this output
 ```
 
+#### 6. Worktree Cleanup (After Integration)
+```bash
+# After work is merged, clean up worktrees
+cd /original/main/repo/path
+git worktree list  # Check existing worktrees
+
+# Remove completed worktree
+git worktree remove ../Tethys.Results-agent-N
+# OUTPUT: Removing worktree '../Tethys.Results-agent-N'
+
+# Verify cleanup
+git worktree list  # Should no longer show removed worktree
+```
+
+### Benefits of Git Worktree for Parallel Development
+
+1. **Complete Isolation**: Each agent works in a completely separate directory
+2. **No Switching Required**: Agents never need to switch branches
+3. **True Parallelism**: Multiple agents can run builds/tests simultaneously
+4. **No Conflicts**: Working directories are completely independent
+5. **Easy Cleanup**: `git worktree remove` cleans up everything
+
 ### Example Multi-Agent Response Format
 
 ```markdown
 ## Agent 3: Implementing Equality
 
-### Branch Setup
+### Worktree Setup (Preferred Method)
 ```bash
-git checkout -b feature/agent-3-equality
-# OUTPUT: Switched to a new branch 'feature/agent-3-equality'
+# Create isolated worktree for this agent
+git worktree add ../Tethys.Results-agent-3 -b feature/agent-3-equality
+# OUTPUT: Preparing worktree (new branch 'feature/agent-3-equality')
+# OUTPUT: HEAD is now at cf73e6a feat: implement v1.1.0...
 
-git branch --show-current
-# OUTPUT: feature/agent-3-equality
+cd ../Tethys.Results-agent-3
+pwd
+# OUTPUT: /home/dwalleck/repos/Tethys.Results-agent-3
+
+git worktree list
+# OUTPUT: /home/dwalleck/repos/Tethys.Results             cf73e6a [main]
+# OUTPUT: /home/dwalleck/repos/Tethys.Results-agent-3    cf73e6a [feature/agent-3-equality]
 
 mkdir -p progress
 echo "# Agent 3 Status - $(date)" > progress/agent-3-status.md
@@ -592,7 +635,7 @@ dotnet test --filter "EqualityTests"
 ./scripts/verify-test-first.sh
 # OUTPUT: ✅ Test-first verified for: Result.cs, GenericResult.cs
 
-./scripts/check-coverage-threshold.sh
+./scripts/check-coverage.sh
 # OUTPUT: ✅ Coverage 98% meets threshold of 95%
 
 touch progress/READY-agent-3
@@ -601,34 +644,55 @@ ls progress/READY-*
 ```
 ```
 
+### When to Use Git Worktree vs Regular Branches
+
+**Use Git Worktree when:**
+- Multiple agents need to work simultaneously
+- Agents need to run builds/tests in parallel
+- Complete isolation between work streams is required
+- Avoiding any risk of branch conflicts
+
+**Use Regular Branches when:**
+- Only one agent is working at a time
+- Git worktree is not available
+- Quick single-file changes
+- Sequential work is acceptable
+
 ### Common Mistakes to AVOID
 
-1. ❌ **Working without creating a branch**
+1. ❌ **Working without creating a worktree or branch**
    ```bash
-   # WRONG - No branch creation shown
+   # WRONG - No worktree/branch creation shown
    "I'll implement the equality feature..."
    ```
 
-2. ❌ **Not showing command outputs**
+2. ❌ **Multiple agents in same directory**
+   ```bash
+   # WRONG - Agents competing for same working directory
+   Agent 1: git checkout feature/agent-1-feature
+   Agent 2: git checkout feature/agent-2-feature  # Conflicts!
+   ```
+
+3. ❌ **Not showing command outputs**
    ```bash
    # WRONG - No output shown
    dotnet test
    "Tests are passing"
    ```
 
-3. ❌ **Skipping verification scripts**
+4. ❌ **Skipping verification scripts**
    ```bash
    # WRONG - No script execution
    "Implementation complete"
    ```
 
-4. ❌ **No progress tracking**
+5. ❌ **No progress tracking**
    ```bash
    # WRONG - No status files created
    "Moving on to the next task"
    ```
 
-5. ❌ **BYPASSING QUALITY CHECKS**
+6. ❌ **BYPASSING QUALITY CHECKS**
    ```bash
    # ABSOLUTELY FORBIDDEN without explicit user consent
    git commit --no-verify
