@@ -98,7 +98,7 @@ namespace Tethys.Results
         /// </returns>
         public static async Task<Result> ThenAsync(this Result result, Func<Task<Result>> next)
         {
-            return result.Success ? await next() : result;
+            return result.Success ? await next().ConfigureAwait(false) : result;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Tethys.Results
         /// </returns>
         public static async Task<Result> ThenAsync<T>(this Result<T> result, Func<T, Task<Result>> next)
         {
-            return result.Success ? await next(result.Data) : result.AsResult();
+            return result.Success ? await next(result.Data).ConfigureAwait(false) : result.AsResult();
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Tethys.Results
         /// </returns>
         public static async Task<Result<TOut>> ThenAsync<TIn, TOut>(this Result<TIn> result, Func<TIn, Task<Result<TOut>>> next)
         {
-            return result.Success ? await next(result.Data) : Result<TOut>.Fail(result.Message, result.Exception);
+            return result.Success ? await next(result.Data).ConfigureAwait(false) : Result<TOut>.Fail(result.Message, result.Exception);
         }
 
         /// <summary>
@@ -143,8 +143,8 @@ namespace Tethys.Results
         /// </returns>
         public static async Task<Result> ThenAsync(this Task<Result> resultTask, Func<Task<Result>> next)
         {
-            var result = await resultTask;
-            return result.Success ? await next() : result;
+            var result = await resultTask.ConfigureAwait(false);
+            return result.Success ? await next().ConfigureAwait(false) : result;
         }
 
         /// <summary>
@@ -159,8 +159,8 @@ namespace Tethys.Results
         /// </returns>
         public static async Task<Result> ThenAsync<T>(this Task<Result<T>> resultTask, Func<T, Task<Result>> next)
         {
-            var result = await resultTask;
-            return result.Success ? await next(result.Data) : result.AsResult();
+            var result = await resultTask.ConfigureAwait(false);
+            return result.Success ? await next(result.Data).ConfigureAwait(false) : result.AsResult();
         }
 
         /// <summary>
@@ -176,8 +176,8 @@ namespace Tethys.Results
         /// </returns>
         public static async Task<Result<TOut>> ThenAsync<TIn, TOut>(this Task<Result<TIn>> resultTask, Func<TIn, Task<Result<TOut>>> next)
         {
-            var result = await resultTask;
-            return result.Success ? await next(result.Data) : Result<TOut>.Fail(result.Message, result.Exception);
+            var result = await resultTask.ConfigureAwait(false);
+            return result.Success ? await next(result.Data).ConfigureAwait(false) : Result<TOut>.Fail(result.Message, result.Exception);
         }
 
         #region OnSuccess Callback Methods

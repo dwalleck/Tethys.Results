@@ -185,7 +185,7 @@ namespace Tethys.Test
         }
 
         /// <summary>
-        /// Tests for generic Result<T> equality.
+        /// Tests for generic Result&lt;T&gt; equality.
         /// </summary>
         public class GenericResultEqualityTests
         {

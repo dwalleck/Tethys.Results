@@ -14,6 +14,13 @@ The AGENT-GUIDELINES.md file contains:
 - Code quality requirements
 - Step-by-step implementation process
 - Verification checklists
+- **Parallel Development Workflow** (Section: "Parallel Development Workflow")
+
+**SPECIAL ATTENTION**: If working as part of a multi-agent team:
+1. You MUST follow the "Parallel Development Workflow" section in AGENT-GUIDELINES.md
+2. You MUST create branches and show ALL command outputs
+3. You MUST run verification scripts and show their output
+4. You MUST create progress tracking files
 
 **NEVER** proceed with implementation without following the guidelines in AGENT-GUIDELINES.md.
 

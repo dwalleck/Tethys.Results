@@ -6,7 +6,7 @@ using Tethys.Results;
 namespace Tethys.Test
 {
     /// <summary>
-    /// Unit tests for the Try pattern methods in Result and Result<T> classes.
+    /// Unit tests for the Try pattern methods in Result and Result&lt;T&gt; classes.
     /// </summary>
     public class TryPatternTests
     {
@@ -246,7 +246,7 @@ namespace Tethys.Test
         }
 
         /// <summary>
-        /// Tests for Result<T>.Try method with synchronous operations
+        /// Tests for Result&lt;T&gt;.Try method with synchronous operations
         /// </summary>
         public class GenericResultTryTests
         {
@@ -375,7 +375,7 @@ namespace Tethys.Test
         }
 
         /// <summary>
-        /// Tests for Result<T>.TryAsync method with asynchronous operations
+        /// Tests for Result&lt;T&gt;.TryAsync method with asynchronous operations
         /// </summary>
         public class GenericResultTryAsyncTests
         {
