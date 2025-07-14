@@ -115,9 +115,9 @@ namespace Tethys.Test
             // Assert
             await Assert.That(combinedResult.Success).IsTrue();
             await Assert.That(combinedResult.Message).IsEqualTo("All operations completed successfully");
-            await Assert.That(combinedResult.Data).IsNotNull();
+            await Assert.That(combinedResult.Value).IsNotNull();
             
-            var data = combinedResult.Data.ToList();
+            var data = combinedResult.Value.ToList();
             await Assert.That(data.Count).IsEqualTo(3);
             await Assert.That(data[0]).IsEqualTo(1);
             await Assert.That(data[1]).IsEqualTo(2);
@@ -143,7 +143,7 @@ namespace Tethys.Test
             await Assert.That(combinedResult.Message).IsEqualTo("One or more operations failed");
             await Assert.That(combinedResult.Exception).IsNotNull();
             await Assert.That(combinedResult.Exception is AggregateError).IsTrue();
-            await Assert.That(combinedResult.Data).IsNull();
+            await Assert.That(combinedResult.Value).IsNull();
         }
         
         [Test]

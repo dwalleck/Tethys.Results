@@ -53,7 +53,7 @@ namespace Tethys.Test
             
             // Assert
             await Assert.That(result.Success).IsTrue();
-            await Assert.That(result.Data).IsEqualTo(value);
+            await Assert.That(result.Value).IsEqualTo(value);
             await Assert.That(result.Message).IsEqualTo("Operation completed successfully");
         }
         
@@ -69,7 +69,7 @@ namespace Tethys.Test
             
             // Assert
             await Assert.That(result.Success).IsTrue();
-            await Assert.That(result.Data).IsEqualTo(value);
+            await Assert.That(result.Value).IsEqualTo(value);
             await Assert.That(extractedValue).IsEqualTo(value);
         }
         
@@ -85,7 +85,7 @@ namespace Tethys.Test
             
             // Assert
             await Assert.That(result.Success).IsTrue();
-            await Assert.That(result.Data).IsEqualTo(obj);
+            await Assert.That(result.Value).IsEqualTo(obj);
             await Assert.That(extractedObj).IsEqualTo(obj);
         }
         
@@ -101,7 +101,7 @@ namespace Tethys.Test
             
             // Assert
             await Assert.That(result.Success).IsTrue();
-            await Assert.That(result.Data).IsEqualTo(value);
+            await Assert.That(result.Value).IsEqualTo(value);
             await Assert.That(extractedValue).IsEqualTo(value);
         }
         
@@ -116,7 +116,7 @@ namespace Tethys.Test
             
             // Assert
             await Assert.That(result.Success).IsTrue();
-            await Assert.That(result.Data).IsNull();
+            await Assert.That(result.Value).IsNull();
         }
         
         [Test]

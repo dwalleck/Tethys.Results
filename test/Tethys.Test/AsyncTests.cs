@@ -85,7 +85,7 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(finalResult.Success).IsTrue();
-            await Assert.That(finalResult.Data).IsEqualTo("42");
+            await Assert.That(finalResult.Value).IsEqualTo("42");
             await Assert.That(finalResult.Message).IsEqualTo("Transformed data");
         }
 

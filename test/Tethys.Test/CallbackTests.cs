@@ -126,7 +126,7 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(returnedResult).IsSameReferenceAs(result);
-            await Assert.That(returnedResult.Data).IsEqualTo("test");
+            await Assert.That(returnedResult.Value).IsEqualTo("test");
             await Assert.That(returnedResult.Message).IsEqualTo("Success message");
         }
 
@@ -402,7 +402,7 @@ namespace Tethys.Test
             // Assert
             await Assert.That(capturedResult).IsSameReferenceAs(result);
             await Assert.That(capturedResult.Success).IsTrue();
-            await Assert.That(capturedResult.Data).IsEqualTo(42);
+            await Assert.That(capturedResult.Value).IsEqualTo(42);
         }
 
         [Test]
@@ -566,7 +566,7 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(returnedResult).IsSameReferenceAs(result);
-            await Assert.That(returnedResult.Data).IsEqualTo("test");
+            await Assert.That(returnedResult.Value).IsEqualTo("test");
             await Assert.That(returnedResult.Message).IsEqualTo("Success message");
         }
 
@@ -804,7 +804,7 @@ namespace Tethys.Test
             // Assert
             await Assert.That(capturedResult).IsSameReferenceAs(result);
             await Assert.That(capturedResult.Success).IsTrue();
-            await Assert.That(capturedResult.Data).IsEqualTo(42);
+            await Assert.That(capturedResult.Value).IsEqualTo(42);
         }
 
         [Test]

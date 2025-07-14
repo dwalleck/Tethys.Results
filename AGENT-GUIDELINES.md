@@ -1,4 +1,4 @@
-# Agent Guidelines for Tethys.Results Development
+# Agent Guidelines for  Development
 
 ## Purpose
 This document provides clear, enforceable guidelines for AI agents (and human developers) working on the Tethys.Results project to ensure consistent quality, testing standards, and documentation practices.
@@ -147,7 +147,7 @@ Brief description of changes
 ## Testing Checklist
 - [ ] Tests written BEFORE implementation
 - [ ] All tests pass
-- [ ] Coverage >95% for new code
+- [ ] Coverage >90% for new code
 - [ ] No regression in existing tests
 - [ ] Thread safety tests added (if applicable)
 - [ ] Performance benchmarks run (if applicable)

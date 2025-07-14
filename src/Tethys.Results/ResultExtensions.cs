@@ -35,7 +35,7 @@ namespace Tethys.Results
         /// </returns>
         public static Result Then<T>(this Result<T> result, Func<T, Result> next)
         {
-            return result.Success ? next(result.Data) : result.AsResult();
+            return result.Success ? next(result.Value) : result.AsResult();
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Tethys.Results
         /// </returns>
         public static Result<TOut> Then<TIn, TOut>(this Result<TIn> result, Func<TIn, Result<TOut>> next)
         {
-            return result.Success ? next(result.Data) : Result<TOut>.Fail(result.Message, result.Exception);
+            return result.Success ? next(result.Value) : Result<TOut>.Fail(result.Message, result.Exception);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Tethys.Results
         public static Result<T> When<T>(this Result<T> result, bool condition, Func<T, Result<T>> operation)
         {
             return !result.Success ? result :
-                    condition ? operation(result.Data) : result;
+                    condition ? operation(result.Value) : result;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Tethys.Results
         /// </returns>
         public static async Task<Result> ThenAsync<T>(this Result<T> result, Func<T, Task<Result>> next)
         {
-            return result.Success ? await next(result.Data).ConfigureAwait(false) : result.AsResult();
+            return result.Success ? await next(result.Value).ConfigureAwait(false) : result.AsResult();
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Tethys.Results
         /// </returns>
         public static async Task<Result<TOut>> ThenAsync<TIn, TOut>(this Result<TIn> result, Func<TIn, Task<Result<TOut>>> next)
         {
-            return result.Success ? await next(result.Data).ConfigureAwait(false) : Result<TOut>.Fail(result.Message, result.Exception);
+            return result.Success ? await next(result.Value).ConfigureAwait(false) : Result<TOut>.Fail(result.Message, result.Exception);
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace Tethys.Results
         public static async Task<Result> ThenAsync<T>(this Task<Result<T>> resultTask, Func<T, Task<Result>> next)
         {
             var result = await resultTask.ConfigureAwait(false);
-            return result.Success ? await next(result.Data).ConfigureAwait(false) : result.AsResult();
+            return result.Success ? await next(result.Value).ConfigureAwait(false) : result.AsResult();
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Tethys.Results
         public static async Task<Result<TOut>> ThenAsync<TIn, TOut>(this Task<Result<TIn>> resultTask, Func<TIn, Task<Result<TOut>>> next)
         {
             var result = await resultTask.ConfigureAwait(false);
-            return result.Success ? await next(result.Data).ConfigureAwait(false) : Result<TOut>.Fail(result.Message, result.Exception);
+            return result.Success ? await next(result.Value).ConfigureAwait(false) : Result<TOut>.Fail(result.Message, result.Exception);
         }
 
         #region OnSuccess Callback Methods
@@ -221,7 +221,7 @@ namespace Tethys.Results
 
             if (result.Success)
             {
-                callback(result.Data);
+                callback(result.Value);
             }
 
             return result;
@@ -266,7 +266,7 @@ namespace Tethys.Results
 
             if (result.Success)
             {
-                await callback(result.Data).ConfigureAwait(false);
+                await callback(result.Value).ConfigureAwait(false);
             }
 
             return result;

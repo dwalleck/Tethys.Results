@@ -39,14 +39,14 @@ namespace Tethys.Test
             var result = Result<string>.Ok(data, "Success message");
             var initialSuccess = result.Success;
             var initialMessage = result.Message;
-            var initialData = result.Data;
+            var initialData = result.Value;
             var initialException = result.Exception;
 
             // Act & Assert - Verify that properties cannot be modified
             // This is a compile-time check, but we'll verify at runtime too
             await Assert.That(result.Success).IsEqualTo(initialSuccess);
             await Assert.That(result.Message).IsEqualTo(initialMessage);
-            await Assert.That(result.Data).IsEqualTo(initialData);
+            await Assert.That(result.Value).IsEqualTo(initialData);
             await Assert.That(result.Exception).IsEqualTo(initialException);
 
             // Create a new result with the same values
@@ -88,7 +88,7 @@ namespace Tethys.Test
             for (int i = 0; i < 100; i++)
             {
                 successTasks.Add(Task.Run(() => result.Success));
-                dataTasks.Add(Task.Run(() => result.Data));
+                dataTasks.Add(Task.Run(() => result.Value));
             }
 
             // Wait for all tasks to complete
@@ -188,7 +188,7 @@ namespace Tethys.Test
 
             // Assert - The result's data should reflect the modified value
             // This is expected behavior since the result only stores a reference to the object
-            await Assert.That(result.Data.Value).IsEqualTo("Modified value");
+            await Assert.That(result.Value.Value).IsEqualTo("Modified value");
 
             // However, the result itself should still be immutable
             var initialSuccess = result.Success;
