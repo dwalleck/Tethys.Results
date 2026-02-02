@@ -92,3 +92,6 @@ Temporary Items
 
 # NuGet packages output directory
 nupkgs/
+
+# Git worktrees
+.worktrees/
