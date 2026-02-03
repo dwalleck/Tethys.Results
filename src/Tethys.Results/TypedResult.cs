@@ -87,6 +87,27 @@ namespace Tethys.Results
             }
         }
 
+        /// <summary>
+        /// Pattern matches on the result, executing the appropriate function
+        /// based on success or failure.
+        /// </summary>
+        /// <typeparam name="TResult">The type of value returned by both functions.</typeparam>
+        /// <param name="onSuccess">Function to execute if successful, receives the value.</param>
+        /// <param name="onFailure">Function to execute if failed, receives the error.</param>
+        /// <returns>The value returned by the executed function.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+        public TResult Match<TResult>(
+            Func<TValue, TResult> onSuccess,
+            Func<TError, TResult> onFailure)
+        {
+            if (onSuccess == null)
+                throw new ArgumentNullException(nameof(onSuccess));
+            if (onFailure == null)
+                throw new ArgumentNullException(nameof(onFailure));
+
+            return Success ? onSuccess(_value) : onFailure(_error);
+        }
+
         // Equality stub - will implement fully later
         public bool Equals(Result<TValue, TError> other) => false;
     }
