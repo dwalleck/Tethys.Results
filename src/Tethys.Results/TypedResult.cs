@@ -58,6 +58,35 @@ namespace Tethys.Results
             }
         }
 
+        /// <summary>
+        /// Creates a failed result with the specified error.
+        /// </summary>
+        /// <param name="error">The error value.</param>
+        /// <returns>A failed result containing the error.</returns>
+        public static Result<TValue, TError> Fail(TError error)
+        {
+            return new Result<TValue, TError>(false, default, error);
+        }
+
+        /// <summary>
+        /// Gets the error value.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when accessing Error on a successful result.
+        /// </exception>
+        public TError Error
+        {
+            get
+            {
+                if (Success)
+                {
+                    throw new InvalidOperationException(
+                        "Cannot access Error on a successful result. Check Success first or use Match().");
+                }
+                return _error;
+            }
+        }
+
         // Equality stub - will implement fully later
         public bool Equals(Result<TValue, TError> other) => false;
     }
