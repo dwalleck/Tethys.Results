@@ -95,5 +95,33 @@ namespace Tethys.Test
             // Assert
             await Assert.That(output).IsEqualTo("Error: not found");
         }
+
+        [Test]
+        public async Task Match_WithNullOnSuccess_ShouldThrowArgumentNullException()
+        {
+            // Arrange
+            var result = Result<int, string>.Ok(42);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            {
+                _ = result.Match<string>(null!, error => error);
+                return Task.CompletedTask;
+            });
+        }
+
+        [Test]
+        public async Task Match_WithNullOnFailure_ShouldThrowArgumentNullException()
+        {
+            // Arrange
+            var result = Result<int, string>.Ok(42);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            {
+                _ = result.Match<string>(value => value.ToString(), null!);
+                return Task.CompletedTask;
+            });
+        }
     }
 }
