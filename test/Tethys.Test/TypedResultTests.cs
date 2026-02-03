@@ -19,5 +19,19 @@ namespace Tethys.Test
             await Assert.That(result.Success).IsTrue();
             await Assert.That(result.Value).IsEqualTo(value);
         }
+
+        [Test]
+        public async Task Fail_ShouldCreateFailedResult()
+        {
+            // Arrange
+            var error = "validation error";
+
+            // Act
+            var result = Result<string, string>.Fail(error);
+
+            // Assert
+            await Assert.That(result.Success).IsFalse();
+            await Assert.That(result.Error).IsEqualTo(error);
+        }
     }
 }
