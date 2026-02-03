@@ -123,5 +123,37 @@ namespace Tethys.Test
                 return Task.CompletedTask;
             });
         }
+
+        [Test]
+        public async Task MatchAsync_OnSuccess_ShouldExecuteOnSuccessFunction()
+        {
+            // Arrange
+            var result = Result<int, string>.Ok(42);
+
+            // Act
+            var output = await result.MatchAsync(
+                onSuccess: async value => { await Task.Delay(1); return $"Value: {value}"; },
+                onFailure: async error => { await Task.Delay(1); return $"Error: {error}"; }
+            );
+
+            // Assert
+            await Assert.That(output).IsEqualTo("Value: 42");
+        }
+
+        [Test]
+        public async Task MatchAsync_OnFailure_ShouldExecuteOnFailureFunction()
+        {
+            // Arrange
+            var result = Result<int, string>.Fail("not found");
+
+            // Act
+            var output = await result.MatchAsync(
+                onSuccess: async value => { await Task.Delay(1); return $"Value: {value}"; },
+                onFailure: async error => { await Task.Delay(1); return $"Error: {error}"; }
+            );
+
+            // Assert
+            await Assert.That(output).IsEqualTo("Error: not found");
+        }
     }
 }
