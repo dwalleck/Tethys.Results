@@ -33,5 +33,35 @@ namespace Tethys.Test
             await Assert.That(result.Success).IsFalse();
             await Assert.That(result.Error).IsEqualTo(error);
         }
+
+        [Test]
+        public async Task Value_OnFailedResult_ShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            var result = Result<string, string>.Fail("error");
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            {
+                _ = result.Value;
+                return Task.CompletedTask;
+            });
+            await Assert.That(exception.Message).IsEqualTo("Cannot access Value on a failed result. Check Success first or use Match().");
+        }
+
+        [Test]
+        public async Task Error_OnSuccessfulResult_ShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            var result = Result<string, string>.Ok("value");
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            {
+                _ = result.Error;
+                return Task.CompletedTask;
+            });
+            await Assert.That(exception.Message).IsEqualTo("Cannot access Error on a successful result. Check Success first or use Match().");
+        }
     }
 }
