@@ -131,7 +131,62 @@ namespace Tethys.Results
                 : await onFailure(_error).ConfigureAwait(false);
         }
 
-        // Equality stub - will implement fully later
-        public bool Equals(Result<TValue, TError> other) => false;
+        /// <summary>
+        /// Determines whether the specified result is equal to this instance.
+        /// </summary>
+        /// <param name="other">The result to compare with this instance.</param>
+        /// <returns>true if the results are equal; otherwise, false.</returns>
+        public bool Equals(Result<TValue, TError> other)
+        {
+            if (other is null)
+                return false;
+
+            if (ReferenceEquals(this, other))
+                return true;
+
+            if (Success != other.Success)
+                return false;
+
+            return Success
+                ? EqualityComparer<TValue>.Default.Equals(_value, other._value)
+                : EqualityComparer<TError>.Default.Equals(_error, other._error);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Result<TValue, TError>);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Success.GetHashCode();
+                hashCode = (hashCode * 397) ^ (Success
+                    ? EqualityComparer<TValue>.Default.GetHashCode(_value)
+                    : EqualityComparer<TError>.Default.GetHashCode(_error));
+                return hashCode;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether two results are equal.
+        /// </summary>
+        public static bool operator ==(Result<TValue, TError> left, Result<TValue, TError> right)
+        {
+            if (left is null)
+                return right is null;
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// Determines whether two results are not equal.
+        /// </summary>
+        public static bool operator !=(Result<TValue, TError> left, Result<TValue, TError> right)
+        {
+            return !(left == right);
+        }
     }
 }
