@@ -276,5 +276,100 @@ namespace Tethys.Test
             // Assert
             await Assert.That(year).IsEqualTo(2026);
         }
+
+        [Test]
+        public async Task MatchAsync_WithNullOnSuccess_ShouldThrowArgumentNullException()
+        {
+            // Arrange
+            var result = Result<int, string>.Ok(42);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await result.MatchAsync<string>(null!, async error => await Task.FromResult(error));
+            });
+        }
+
+        [Test]
+        public async Task MatchAsync_WithNullOnFailure_ShouldThrowArgumentNullException()
+        {
+            // Arrange
+            var result = Result<int, string>.Ok(42);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await result.MatchAsync<string>(async value => await Task.FromResult(value.ToString()), null!);
+            });
+        }
+
+        [Test]
+        public async Task GetHashCode_EqualFailedResults_ShouldHaveSameHashCode()
+        {
+            // Arrange
+            var result1 = Result<int, string>.Fail("error");
+            var result2 = Result<int, string>.Fail("error");
+
+            // Assert
+            await Assert.That(result1.GetHashCode()).IsEqualTo(result2.GetHashCode());
+        }
+
+        [Test]
+        public async Task Equals_TwoSuccessfulResultsWithDifferentValues_ShouldNotBeEqual()
+        {
+            // Arrange
+            var result1 = Result<int, string>.Ok(42);
+            var result2 = Result<int, string>.Ok(99);
+
+            // Assert
+            await Assert.That(result1.Equals(result2)).IsFalse();
+            await Assert.That(result1 == result2).IsFalse();
+            await Assert.That(result1 != result2).IsTrue();
+        }
+
+        [Test]
+        public async Task Equals_TwoFailedResultsWithDifferentErrors_ShouldNotBeEqual()
+        {
+            // Arrange
+            var result1 = Result<int, string>.Fail("error1");
+            var result2 = Result<int, string>.Fail("error2");
+
+            // Assert
+            await Assert.That(result1.Equals(result2)).IsFalse();
+            await Assert.That(result1 == result2).IsFalse();
+            await Assert.That(result1 != result2).IsTrue();
+        }
+
+        [Test]
+        public async Task EqualsObject_WithEqualResult_ShouldReturnTrue()
+        {
+            // Arrange
+            var result1 = Result<int, string>.Ok(42);
+            object result2 = Result<int, string>.Ok(42);
+
+            // Assert
+            await Assert.That(result1.Equals(result2)).IsTrue();
+        }
+
+        [Test]
+        public async Task EqualsObject_WithDifferentType_ShouldReturnFalse()
+        {
+            // Arrange
+            var result = Result<int, string>.Ok(42);
+            object notAResult = "not a result";
+
+            // Assert
+            await Assert.That(result.Equals(notAResult)).IsFalse();
+        }
+
+        [Test]
+        public async Task Equals_SameReference_ShouldReturnTrue()
+        {
+            // Arrange
+            var result = Result<int, string>.Ok(42);
+
+            // Assert
+            await Assert.That(result.Equals(result)).IsTrue();
+        }
     }
 }

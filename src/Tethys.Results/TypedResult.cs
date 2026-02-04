@@ -17,6 +17,7 @@ namespace Tethys.Results
         /// <summary>
         /// Gets a value indicating whether the operation was successful.
         /// </summary>
+        /// <value><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</value>
         public bool Success { get; }
 
         private readonly TValue _value;
@@ -45,6 +46,7 @@ namespace Tethys.Results
         /// <exception cref="InvalidOperationException">
         /// Thrown when accessing Value on a failed result.
         /// </exception>
+        /// <value>The success value when <see cref="Success"/> is <c>true</c>.</value>
         public TValue Value
         {
             get
@@ -74,6 +76,7 @@ namespace Tethys.Results
         /// <exception cref="InvalidOperationException">
         /// Thrown when accessing Error on a successful result.
         /// </exception>
+        /// <value>The error value when <see cref="Success"/> is <c>false</c>.</value>
         public TError Error
         {
             get
@@ -95,7 +98,7 @@ namespace Tethys.Results
         /// <param name="onSuccess">Function to execute if successful, receives the value.</param>
         /// <param name="onFailure">Function to execute if failed, receives the error.</param>
         /// <returns>The value returned by the executed function.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="onSuccess"/> or <paramref name="onFailure"/> is null.</exception>
         public TResult Match<TResult>(
             Func<TValue, TResult> onSuccess,
             Func<TError, TResult> onFailure)
@@ -116,7 +119,7 @@ namespace Tethys.Results
         /// <param name="onSuccess">Async function to execute if successful, receives the value.</param>
         /// <param name="onFailure">Async function to execute if failed, receives the error.</param>
         /// <returns>A task containing the value returned by the executed function.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="onSuccess"/> or <paramref name="onFailure"/> is null.</exception>
         public async Task<TResult> MatchAsync<TResult>(
             Func<TValue, Task<TResult>> onSuccess,
             Func<TError, Task<TResult>> onFailure)
@@ -165,15 +168,29 @@ namespace Tethys.Results
             {
                 var hashCode = Success.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Success
-                    ? EqualityComparer<TValue>.Default.GetHashCode(_value)
-                    : EqualityComparer<TError>.Default.GetHashCode(_error));
+                    ? (_value == null ? 0 : EqualityComparer<TValue>.Default.GetHashCode(_value))
+                    : (_error == null ? 0 : EqualityComparer<TError>.Default.GetHashCode(_error)));
                 return hashCode;
             }
         }
 
         /// <summary>
+        /// Returns a string representation of this result.
+        /// </summary>
+        /// <returns>A string indicating success or failure with the contained value or error.</returns>
+        public override string ToString()
+        {
+            return Success
+                ? $"Success({_value})"
+                : $"Failure({_error})";
+        }
+
+        /// <summary>
         /// Determines whether two results are equal.
         /// </summary>
+        /// <param name="left">The first <see cref="Result{TValue, TError}"/> to compare.</param>
+        /// <param name="right">The second <see cref="Result{TValue, TError}"/> to compare.</param>
+        /// <returns><c>true</c> if the two results are equal; otherwise, <c>false</c>.</returns>
         public static bool operator ==(Result<TValue, TError> left, Result<TValue, TError> right)
         {
             if (left is null)
@@ -184,6 +201,9 @@ namespace Tethys.Results
         /// <summary>
         /// Determines whether two results are not equal.
         /// </summary>
+        /// <param name="left">The first <see cref="Result{TValue, TError}"/> to compare.</param>
+        /// <param name="right">The second <see cref="Result{TValue, TError}"/> to compare.</param>
+        /// <returns><c>true</c> if the two results are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Result<TValue, TError> left, Result<TValue, TError> right)
         {
             return !(left == right);
