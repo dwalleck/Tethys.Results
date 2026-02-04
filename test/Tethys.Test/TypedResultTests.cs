@@ -155,5 +155,66 @@ namespace Tethys.Test
             // Assert
             await Assert.That(output).IsEqualTo("Error: not found");
         }
+
+        [Test]
+        public async Task Equals_TwoSuccessfulResultsWithSameValue_ShouldBeEqual()
+        {
+            // Arrange
+            var result1 = Result<int, string>.Ok(42);
+            var result2 = Result<int, string>.Ok(42);
+
+            // Assert
+            await Assert.That(result1.Equals(result2)).IsTrue();
+            await Assert.That(result1 == result2).IsTrue();
+            await Assert.That(result1 != result2).IsFalse();
+        }
+
+        [Test]
+        public async Task Equals_TwoFailedResultsWithSameError_ShouldBeEqual()
+        {
+            // Arrange
+            var result1 = Result<int, string>.Fail("error");
+            var result2 = Result<int, string>.Fail("error");
+
+            // Assert
+            await Assert.That(result1.Equals(result2)).IsTrue();
+            await Assert.That(result1 == result2).IsTrue();
+        }
+
+        [Test]
+        public async Task Equals_SuccessAndFailure_ShouldNotBeEqual()
+        {
+            // Arrange
+            var success = Result<int, string>.Ok(42);
+            var failure = Result<int, string>.Fail("error");
+
+            // Assert
+            await Assert.That(success.Equals(failure)).IsFalse();
+            await Assert.That(success == failure).IsFalse();
+            await Assert.That(success != failure).IsTrue();
+        }
+
+        [Test]
+        public async Task Equals_WithNull_ShouldReturnFalse()
+        {
+            // Arrange
+            var result = Result<int, string>.Ok(42);
+
+            // Assert
+            await Assert.That(result.Equals(null)).IsFalse();
+            await Assert.That(result == null).IsFalse();
+            await Assert.That(null == result).IsFalse();
+        }
+
+        [Test]
+        public async Task GetHashCode_EqualResults_ShouldHaveSameHashCode()
+        {
+            // Arrange
+            var result1 = Result<int, string>.Ok(42);
+            var result2 = Result<int, string>.Ok(42);
+
+            // Assert
+            await Assert.That(result1.GetHashCode()).IsEqualTo(result2.GetHashCode());
+        }
     }
 }
