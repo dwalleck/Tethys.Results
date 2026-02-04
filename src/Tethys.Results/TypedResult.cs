@@ -108,6 +108,29 @@ namespace Tethys.Results
             return Success ? onSuccess(_value) : onFailure(_error);
         }
 
+        /// <summary>
+        /// Asynchronously pattern matches on the result, executing the appropriate function
+        /// based on success or failure.
+        /// </summary>
+        /// <typeparam name="TResult">The type of value returned by both functions.</typeparam>
+        /// <param name="onSuccess">Async function to execute if successful, receives the value.</param>
+        /// <param name="onFailure">Async function to execute if failed, receives the error.</param>
+        /// <returns>A task containing the value returned by the executed function.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+        public async Task<TResult> MatchAsync<TResult>(
+            Func<TValue, Task<TResult>> onSuccess,
+            Func<TError, Task<TResult>> onFailure)
+        {
+            if (onSuccess == null)
+                throw new ArgumentNullException(nameof(onSuccess));
+            if (onFailure == null)
+                throw new ArgumentNullException(nameof(onFailure));
+
+            return Success
+                ? await onSuccess(_value).ConfigureAwait(false)
+                : await onFailure(_error).ConfigureAwait(false);
+        }
+
         // Equality stub - will implement fully later
         public bool Equals(Result<TValue, TError> other) => false;
     }
