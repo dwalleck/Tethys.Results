@@ -216,5 +216,65 @@ namespace Tethys.Test
             // Assert
             await Assert.That(result1.GetHashCode()).IsEqualTo(result2.GetHashCode());
         }
+
+        [Test]
+        public async Task Ok_WithValueType_ShouldWork()
+        {
+            // Arrange & Act
+            var result = Result<int, int>.Ok(42);
+
+            // Assert
+            await Assert.That(result.Success).IsTrue();
+            await Assert.That(result.Value).IsEqualTo(42);
+        }
+
+        [Test]
+        public async Task Fail_WithValueType_ShouldWork()
+        {
+            // Arrange & Act
+            var result = Result<int, int>.Fail(500);
+
+            // Assert
+            await Assert.That(result.Success).IsFalse();
+            await Assert.That(result.Error).IsEqualTo(500);
+        }
+
+        [Test]
+        public async Task Ok_WithNullValue_ShouldWork()
+        {
+            // Arrange & Act
+            var result = Result<string, string>.Ok(null);
+
+            // Assert
+            await Assert.That(result.Success).IsTrue();
+            await Assert.That(result.Value).IsNull();
+        }
+
+        [Test]
+        public async Task Fail_WithNullError_ShouldWork()
+        {
+            // Arrange & Act
+            var result = Result<string, string>.Fail(null);
+
+            // Assert
+            await Assert.That(result.Success).IsFalse();
+            await Assert.That(result.Error).IsNull();
+        }
+
+        [Test]
+        public async Task Match_WithComplexTypes_ShouldWork()
+        {
+            // Arrange
+            var result = Result<DateTime, Exception>.Ok(new DateTime(2026, 1, 1));
+
+            // Act
+            var year = result.Match(
+                onSuccess: date => date.Year,
+                onFailure: ex => -1
+            );
+
+            // Assert
+            await Assert.That(year).IsEqualTo(2026);
+        }
     }
 }
