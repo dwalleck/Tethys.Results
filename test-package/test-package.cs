@@ -20,7 +20,7 @@ namespace TestPackage
             var dataResult = Result<int>.Ok(42);
             var failDataResult = Result<string>.Fail("Failed to get data");
             
-            Console.WriteLine($"Data result: Success={dataResult.Success}, Data={dataResult.Data}");
+            Console.WriteLine($"Data result: Success={dataResult.Success}, Data={dataResult.Value}");
             Console.WriteLine($"Fail data result: Success={failDataResult.Success}, Message={failDataResult.Message}");
             
             // Test value extraction

@@ -120,7 +120,7 @@ Before ANY merge:
 ```bash
 # Run all verification scripts
 ./scripts/verify-test-first.sh
-./scripts/check-coverage-threshold.sh
+./scripts/check-coverage.sh
 ./scripts/verify-documentation.sh
 
 # Run full test suite

@@ -6,7 +6,7 @@ using Tethys.Results;
 namespace Tethys.Test
 {
     /// <summary>
-    /// Unit tests for the Try pattern methods in Result and Result<T> classes.
+    /// Unit tests for the Try pattern methods in Result and Result&lt;T&gt; classes.
     /// </summary>
     public class TryPatternTests
     {
@@ -246,7 +246,7 @@ namespace Tethys.Test
         }
 
         /// <summary>
-        /// Tests for Result<T>.Try method with synchronous operations
+        /// Tests for Result&lt;T&gt;.Try method with synchronous operations
         /// </summary>
         public class GenericResultTryTests
         {
@@ -262,7 +262,7 @@ namespace Tethys.Test
 
                 // Assert
                 await Assert.That(result.Success).IsTrue();
-                await Assert.That(result.Data).IsEqualTo(expectedValue);
+                await Assert.That(result.Value).IsEqualTo(expectedValue);
                 await Assert.That(result.Message).IsEqualTo("Operation completed successfully");
                 await Assert.That(result.Exception).IsNull();
             }
@@ -279,7 +279,7 @@ namespace Tethys.Test
 
                 // Assert
                 await Assert.That(result.Success).IsFalse();
-                await Assert.That(result.Data).IsNull();
+                await Assert.That(result.Value).IsNull();
                 await Assert.That(result.Message).IsEqualTo("Test exception");
                 await Assert.That(result.Exception).IsNotNull();
                 await Assert.That(result.Exception).IsTypeOf<InvalidOperationException>();
@@ -315,7 +315,7 @@ namespace Tethys.Test
 
                 // Assert
                 await Assert.That(result.Success).IsTrue();
-                await Assert.That(result.Data).IsNull();
+                await Assert.That(result.Value).IsNull();
                 await Assert.That(result.Message).IsEqualTo("Operation completed successfully");
                 await Assert.That(result.Exception).IsNull();
             }
@@ -332,7 +332,7 @@ namespace Tethys.Test
 
                 // Assert
                 await Assert.That(result.Success).IsTrue();
-                await Assert.That(result.Data).IsEqualTo(expectedDate);
+                await Assert.That(result.Value).IsEqualTo(expectedDate);
             }
 
             [Test]
@@ -351,11 +351,11 @@ namespace Tethys.Test
                 // Assert
                 await Assert.That(successResult.Success).IsTrue();
                 await Assert.That(successResult.Message).IsEqualTo(successMessage);
-                await Assert.That(successResult.Data).IsEqualTo(42);
+                await Assert.That(successResult.Value).IsEqualTo(42);
 
                 await Assert.That(failureResult.Success).IsFalse();
                 await Assert.That(failureResult.Message).IsEqualTo("Failed to compute: Test exception");
-                await Assert.That(failureResult.Data).IsEqualTo(default(int));
+                await Assert.That(failureResult.Value).IsEqualTo(default(int));
             }
 
             [Test]
@@ -370,12 +370,12 @@ namespace Tethys.Test
 
                 // Assert
                 await Assert.That(result.Success).IsTrue();
-                await Assert.That(result.Data).IsEqualTo(expectedList);
+                await Assert.That(result.Value).IsEqualTo(expectedList);
             }
         }
 
         /// <summary>
-        /// Tests for Result<T>.TryAsync method with asynchronous operations
+        /// Tests for Result&lt;T&gt;.TryAsync method with asynchronous operations
         /// </summary>
         public class GenericResultTryAsyncTests
         {
@@ -395,7 +395,7 @@ namespace Tethys.Test
 
                 // Assert
                 await Assert.That(result.Success).IsTrue();
-                await Assert.That(result.Data).IsEqualTo(expectedValue);
+                await Assert.That(result.Value).IsEqualTo(expectedValue);
                 await Assert.That(result.Message).IsEqualTo("Operation completed successfully");
                 await Assert.That(result.Exception).IsNull();
             }
@@ -416,7 +416,7 @@ namespace Tethys.Test
 
                 // Assert
                 await Assert.That(result.Success).IsFalse();
-                await Assert.That(result.Data).IsEqualTo(default(int));
+                await Assert.That(result.Value).IsEqualTo(default(int));
                 await Assert.That(result.Message).IsEqualTo("Test async exception");
                 await Assert.That(result.Exception).IsNotNull();
                 await Assert.That(result.Exception).IsTypeOf<InvalidOperationException>();
@@ -453,7 +453,7 @@ namespace Tethys.Test
 
                 // Assert
                 await Assert.That(result.Success).IsFalse();
-                await Assert.That(result.Data).IsNull();
+                await Assert.That(result.Value).IsNull();
                 await Assert.That(result.Message).IsEqualTo("Synchronous exception");
                 await Assert.That(result.Exception).IsNotNull();
                 await Assert.That(result.Exception).IsEqualTo(expectedException);
@@ -475,7 +475,7 @@ namespace Tethys.Test
 
                 // Assert
                 await Assert.That(result.Success).IsTrue();
-                await Assert.That(result.Data).IsEqualTo(expectedData);
+                await Assert.That(result.Value).IsEqualTo(expectedData);
             }
 
             [Test]
@@ -521,7 +521,7 @@ namespace Tethys.Test
                 // Assert
                 await Assert.That(successResult.Success).IsTrue();
                 await Assert.That(successResult.Message).IsEqualTo("Async success");
-                await Assert.That(successResult.Data).IsEqualTo(42);
+                await Assert.That(successResult.Value).IsEqualTo(42);
 
                 await Assert.That(failureResult.Success).IsFalse();
                 await Assert.That(failureResult.Message).IsEqualTo("Async failed: Test exception");
@@ -598,7 +598,7 @@ namespace Tethys.Test
                 for (int i = 0; i < results.Length; i++)
                 {
                     await Assert.That(results[i].Success).IsTrue();
-                    await Assert.That(results[i].Data >= 0 && results[i].Data < 100).IsTrue();
+                    await Assert.That(results[i].Value >= 0 && results[i].Value < 100).IsTrue();
                 }
             }
         }
