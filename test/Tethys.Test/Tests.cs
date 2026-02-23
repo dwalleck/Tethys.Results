@@ -54,7 +54,7 @@ namespace Tethys.Test
 
             await Assert.That(result.Success).IsTrue();
             await Assert.That(result.Message).IsEqualTo("Success message");
-            await Assert.That(result.Data).IsEqualTo(testData);
+            await Assert.That(result.Value).IsEqualTo(testData);
             await Assert.That(result.Exception).IsNull();
         }
 
@@ -73,7 +73,7 @@ namespace Tethys.Test
 
             await Assert.That(result.Success).IsFalse();
             await Assert.That(result.Message).IsEqualTo("Error message");
-            await Assert.That(result.Data).IsEqualTo(default(string));
+            await Assert.That(result.Value).IsEqualTo(default(string));
             await Assert.That(result.Exception).IsEqualTo(exception);
         }
 
@@ -163,7 +163,7 @@ namespace Tethys.Test
             // Assert
 
             await Assert.That(finalResult.Success).IsTrue();
-            await Assert.That(finalResult.Data).IsEqualTo("42");
+            await Assert.That(finalResult.Value).IsEqualTo("42");
             await Assert.That(finalResult.Message).IsEqualTo("Transformed data");
         }
 
@@ -394,7 +394,7 @@ namespace Tethys.Test
             // Assert
 
             await Assert.That(finalResult.Success).IsTrue();
-            await Assert.That(finalResult.Data).IsEqualTo("42");
+            await Assert.That(finalResult.Value).IsEqualTo("42");
             await Assert.That(finalResult.Message).IsEqualTo("Transformed data");
         }
 
@@ -894,7 +894,7 @@ namespace Tethys.Test
             var result = Result<string>.Ok(data, "Success message");
             var initialSuccess = result.Success;
             var initialMessage = result.Message;
-            var initialData = result.Data;
+            var initialData = result.Value;
             var initialException = result.Exception;
 
             // Act & Assert - Verify that properties cannot be modified
@@ -902,7 +902,7 @@ namespace Tethys.Test
 
             await Assert.That(result.Success).IsEqualTo(initialSuccess);
             await Assert.That(result.Message).IsEqualTo(initialMessage);
-            await Assert.That(result.Data).IsEqualTo(initialData);
+            await Assert.That(result.Value).IsEqualTo(initialData);
             await Assert.That(result.Exception).IsEqualTo(initialException);
 
             // Create a new result with the same values
@@ -952,7 +952,7 @@ namespace Tethys.Test
             for (int i = 0; i < 100; i++)
             {
                 successTasks.Add(Task.Run(() => result.Success));
-                dataTasks.Add(Task.Run(() => result.Data));
+                dataTasks.Add(Task.Run(() => result.Value));
             }
 
             // Wait for all tasks to complete
@@ -1070,7 +1070,7 @@ namespace Tethys.Test
             // Assert - The result's data should reflect the modified value
             // This is expected behavior since the result only stores a reference to the object
 
-            await Assert.That(result.Data.Value).IsEqualTo("Modified value");
+            await Assert.That(result.Value.Value).IsEqualTo("Modified value");
 
             // However, the result itself should still be immutable
 
@@ -1246,7 +1246,7 @@ namespace Tethys.Test
         
         // Assert
         await Assert.That(result.Success).IsTrue();
-        await Assert.That(result.Data).IsEqualTo(value);
+        await Assert.That(result.Value).IsEqualTo(value);
         await Assert.That(result.Message).IsEqualTo("Operation completed successfully");
     }
     
@@ -1262,7 +1262,7 @@ namespace Tethys.Test
         
         // Assert
         await Assert.That(result.Success).IsTrue();
-        await Assert.That(result.Data).IsEqualTo(value);
+        await Assert.That(result.Value).IsEqualTo(value);
         await Assert.That(extractedValue).IsEqualTo(value);
     }
     
@@ -1278,7 +1278,7 @@ namespace Tethys.Test
         
         // Assert
         await Assert.That(result.Success).IsTrue();
-        await Assert.That(result.Data).IsEqualTo(obj);
+        await Assert.That(result.Value).IsEqualTo(obj);
         await Assert.That(extractedObj).IsEqualTo(obj);
     }
     
@@ -1294,7 +1294,7 @@ namespace Tethys.Test
         
         // Assert
         await Assert.That(result.Success).IsTrue();
-        await Assert.That(result.Data).IsEqualTo(value);
+        await Assert.That(result.Value).IsEqualTo(value);
         await Assert.That(extractedValue).IsEqualTo(value);
     }
     
@@ -1408,9 +1408,9 @@ namespace Tethys.Test
         // Assert
         await Assert.That(combinedResult.Success).IsTrue();
         await Assert.That(combinedResult.Message).IsEqualTo("All operations completed successfully");
-        await Assert.That(combinedResult.Data).IsNotNull();
+        await Assert.That(combinedResult.Value).IsNotNull();
         
-        var data = combinedResult.Data.ToList();
+        var data = combinedResult.Value.ToList();
         await Assert.That(data.Count).IsEqualTo(3);
         await Assert.That(data[0]).IsEqualTo(1);
         await Assert.That(data[1]).IsEqualTo(2);
@@ -1436,7 +1436,7 @@ namespace Tethys.Test
         await Assert.That(combinedResult.Message).IsEqualTo("One or more operations failed");
         await Assert.That(combinedResult.Exception).IsNotNull();
         await Assert.That(combinedResult.Exception is AggregateError).IsTrue();
-        await Assert.That(combinedResult.Data).IsNull();
+        await Assert.That(combinedResult.Value).IsNull();
     }
     
     [Test]
@@ -1535,7 +1535,7 @@ namespace Tethys.Test
         // Assert
         await Assert.That(result.Success).IsTrue();
         await Assert.That(result.Message).IsEqualTo("Operation completed successfully");
-        await Assert.That(result.Data).IsEqualTo(testData);
+        await Assert.That(result.Value).IsEqualTo(testData);
         await Assert.That(result.Exception).IsNull();
     }
     
@@ -1566,7 +1566,7 @@ namespace Tethys.Test
         // Assert
         await Assert.That(result.Success).IsFalse();
         await Assert.That(result.Message).IsEqualTo(errorMessage);
-        await Assert.That(result.Data).IsEqualTo(default(string));
+        await Assert.That(result.Value).IsEqualTo(default(string));
         await Assert.That(result.Exception).IsNull();
     }
     

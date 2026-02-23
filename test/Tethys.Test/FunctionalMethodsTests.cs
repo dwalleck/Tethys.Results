@@ -354,7 +354,7 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(mapped.Success).IsTrue();
-            await Assert.That(mapped.Data).IsEqualTo(10);
+            await Assert.That(mapped.Value).IsEqualTo(10);
             await Assert.That(mapped.Message).IsEqualTo("Operation completed successfully");
         }
 
@@ -370,7 +370,7 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(mapped.Success).IsFalse();
-            await Assert.That(mapped.Data).IsEqualTo(0);
+            await Assert.That(mapped.Value).IsEqualTo(0);
             await Assert.That(mapped.Message).IsEqualTo("Operation failed");
             await Assert.That(mapped.Exception).IsSameReferenceAs(exception);
         }
@@ -397,8 +397,8 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(mapped.Success).IsTrue();
-            await Assert.That(mapped.Data.Name).IsEqualTo("John");
-            await Assert.That(mapped.Data.Length).IsEqualTo(4);
+            await Assert.That(mapped.Value.Name).IsEqualTo("John");
+            await Assert.That(mapped.Value.Length).IsEqualTo(4);
         }
 
         [Test]
@@ -436,7 +436,7 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(mapped.Success).IsTrue();
-            await Assert.That(mapped.Data).IsEqualTo(10);
+            await Assert.That(mapped.Value).IsEqualTo(10);
         }
 
         [Test]
@@ -484,7 +484,7 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(flatMapped.Success).IsTrue();
-            await Assert.That(flatMapped.Data).IsEqualTo("Value: 5");
+            await Assert.That(flatMapped.Value).IsEqualTo("Value: 5");
         }
 
         [Test]
@@ -541,7 +541,7 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(final.Success).IsTrue();
-            await Assert.That(final.Data).IsEqualTo("Final: 10");
+            await Assert.That(final.Value).IsEqualTo("Final: 10");
         }
 
         [Test]
@@ -578,7 +578,7 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(flatMapped.Success).IsTrue();
-            await Assert.That(flatMapped.Data).IsEqualTo("Value: 5");
+            await Assert.That(flatMapped.Value).IsEqualTo("Value: 5");
         }
 
         [Test]
@@ -705,7 +705,7 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(mapped.Success).IsTrue();
-            await Assert.That(mapped.Data).IsEqualTo(42);
+            await Assert.That(mapped.Value).IsEqualTo(42);
             await Assert.That(mapped.Exception).IsNull();
         }
 

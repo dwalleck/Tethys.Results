@@ -105,8 +105,8 @@ The `Result<T>` class represents the outcome of an operation that returns a valu
 | `Success` | `bool` | Indicates whether the operation succeeded |
 | `Message` | `string` | A descriptive message about the operation result |
 | `Exception` | `Exception` | The exception associated with a failed result (null for success) |
-| `Data` | `T` | The value returned by a successful operation (default(T) for failure) |
-| `Value` | `T` | Alias for `Data` property |
+| `Value` | `T` | The value returned by a successful operation (default(T) for failure) |
+| `Data` | `T` | Deprecated alias for `Value` property |
 
 ### Static Methods
 
@@ -116,7 +116,7 @@ Creates a successful result with a value and default message.
 ```csharp
 Result<int> result = Result<int>.Ok(42);
 // result.Success = true
-// result.Data = 42
+// result.Value = 42
 // result.Message = "Operation completed successfully"
 ```
 
@@ -126,7 +126,7 @@ Creates a successful result with a value and custom message.
 ```csharp
 Result<string> result = Result<string>.Ok("John Doe", "User found");
 // result.Success = true
-// result.Data = "John Doe"
+// result.Value = "John Doe"
 // result.Message = "User found"
 ```
 
@@ -137,7 +137,7 @@ Creates a failed result with an error message.
 Result<int> result = Result<int>.Fail("Division by zero");
 // result.Success = false
 // result.Message = "Division by zero"
-// result.Data = 0 (default for int)
+// result.Value = 0 (default for int)
 ```
 
 #### `Result<T>.Fail(string message, Exception exception)`
@@ -149,7 +149,7 @@ Result<Config> result = Result<Config>.Fail("Failed to load config", ex);
 // result.Success = false
 // result.Message = "Failed to load config"
 // result.Exception = ex
-// result.Data = null
+// result.Value = null
 ```
 
 #### `Result<T>.Fail(Exception exception)`
@@ -176,7 +176,7 @@ var results = new List<Result<int>>
 
 Result<int> combined = Result<int>.Combine(results);
 // combined.Success = true
-// combined.Data is IEnumerable<int> { 1, 2, 3 }
+// combined.Value is IEnumerable<int> { 1, 2, 3 }
 ```
 
 **Exceptions:**
@@ -463,7 +463,7 @@ public async Task ProcessInParallel(List<Item> items)
     {
         if (_configResult.Success)
         {
-            await ProcessItem(item, _configResult.Data);
+            await ProcessItem(item, _configResult.Value);
         }
     });
 }

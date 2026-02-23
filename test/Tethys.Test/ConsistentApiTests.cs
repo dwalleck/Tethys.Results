@@ -32,7 +32,7 @@ namespace Tethys.Test
             // Assert
             await Assert.That(result.Success).IsTrue();
             await Assert.That(result.Message).IsEqualTo("Operation completed successfully");
-            await Assert.That(result.Data).IsEqualTo(testData);
+            await Assert.That(result.Value).IsEqualTo(testData);
             await Assert.That(result.Exception).IsNull();
         }
         
@@ -63,7 +63,7 @@ namespace Tethys.Test
             // Assert
             await Assert.That(result.Success).IsFalse();
             await Assert.That(result.Message).IsEqualTo(errorMessage);
-            await Assert.That(result.Data).IsEqualTo(default(string));
+            await Assert.That(result.Value).IsEqualTo(default(string));
             await Assert.That(result.Exception).IsNull();
         }
         
@@ -219,10 +219,10 @@ namespace Tethys.Test
             var result4 = Result<int>.Ok(42, "Custom message");
             
             await Assert.That(result3.Success).IsTrue();
-            await Assert.That(result3.Data).IsEqualTo(42);
+            await Assert.That(result3.Value).IsEqualTo(42);
             await Assert.That(result3.Message).IsEqualTo("Operation completed successfully");
             await Assert.That(result4.Success).IsTrue();
-            await Assert.That(result4.Data).IsEqualTo(42);
+            await Assert.That(result4.Value).IsEqualTo(42);
             await Assert.That(result4.Message).IsEqualTo("Custom message");
             
             // Test Result.Fail(message) and Result.Fail(message, exception)
@@ -243,11 +243,11 @@ namespace Tethys.Test
             
             await Assert.That(result7.Success).IsFalse();
             await Assert.That(result7.Message).IsEqualTo("Error message");
-            await Assert.That(result7.Data).IsEqualTo(default(int));
+            await Assert.That(result7.Value).IsEqualTo(default(int));
             await Assert.That(result7.Exception).IsNull();
             await Assert.That(result8.Success).IsFalse();
             await Assert.That(result8.Message).IsEqualTo("Error message");
-            await Assert.That(result8.Data).IsEqualTo(default(int));
+            await Assert.That(result8.Value).IsEqualTo(default(int));
             await Assert.That(result8.Exception).IsEqualTo(exception);
         }
     }

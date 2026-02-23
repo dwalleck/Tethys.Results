@@ -74,7 +74,7 @@ When your operation returns data, use `Result<T>`:
 Result<int> calculateResult = Result<int>.Ok(42, "Calculation completed");
 if (calculateResult.Success)
 {
-    int value = calculateResult.Data;
+    int value = calculateResult.Value;
     Console.WriteLine($"The answer is: {value}");
 }
 
@@ -96,7 +96,7 @@ Result<string> userResult = GetUserName(userId);
 // Method 1: Check Success property
 if (userResult.Success)
 {
-    string userName = userResult.Data;
+    string userName = userResult.Value;
     Console.WriteLine($"User: {userName}");
 }
 

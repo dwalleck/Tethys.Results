@@ -32,7 +32,7 @@ Console.WriteLine($"Message: {failure.Message}"); // "Something went wrong"
 // Success with data
 var dataResult = Result<string>.Ok("Hello World", "Data retrieved");
 Console.WriteLine($"Success: {dataResult.Success}"); // True
-Console.WriteLine($"Data: {dataResult.Data}"); // "Hello World"
+Console.WriteLine($"Data: {dataResult.Value}"); // "Hello World"
 Console.WriteLine($"Message: {dataResult.Message}"); // "Data retrieved"
 
 // Failure with exception
@@ -745,7 +745,7 @@ public class DataAggregationService
         
         if (combined.Success)
         {
-            var values = combined.Data.ToList();
+            var values = combined.Value.ToList();
             var summary = new OrderSummary
             {
                 OrderId = orderId,
@@ -1289,7 +1289,7 @@ public class UsersController : ControllerBase
         var result = await _userService.GetUserByIdAsync(id);
         
         return result.Success
-            ? Ok(result.Data)
+            ? Ok(result.Value)
             : NotFound(new { error = result.Message });
     }
     
@@ -1305,8 +1305,8 @@ public class UsersController : ControllerBase
         {
             return CreatedAtAction(
                 nameof(GetUser), 
-                new { id = result.Data.Id }, 
-                result.Data);
+                new { id = result.Value.Id }, 
+                result.Value);
         }
         
         // Handle different error types
@@ -1428,7 +1428,7 @@ public static class UserEndpoints
         var result = await service.GetAllUsersAsync();
         
         return result.Success
-            ? Results.Ok(result.Data)
+            ? Results.Ok(result.Value)
             : Results.Problem(result.Message);
     }
     
@@ -1439,7 +1439,7 @@ public static class UserEndpoints
         var result = await service.GetUserByIdAsync(id);
         
         return result.Success
-            ? Results.Ok(result.Data)
+            ? Results.Ok(result.Value)
             : Results.NotFound(new ProblemDetails
             {
                 Title = "User not found",
@@ -1465,8 +1465,8 @@ public static class UserEndpoints
         {
             return Results.CreatedAtRoute(
                 "GetUserById",
-                new { id = result.Data.Id },
-                result.Data);
+                new { id = result.Value.Id },
+                result.Value);
         }
         
         return result.Message.Contains("already exists")
@@ -1617,7 +1617,7 @@ public class ProductsController : ControllerBase
         var result = await _mediator.Send(new GetProductByIdQuery(id));
         
         return result.Success
-            ? Ok(result.Data)
+            ? Ok(result.Value)
             : NotFound(new { error = result.Message });
     }
     
@@ -1630,8 +1630,8 @@ public class ProductsController : ControllerBase
         {
             return CreatedAtAction(
                 nameof(GetProduct),
-                new { id = result.Data.Id },
-                result.Data);
+                new { id = result.Value.Id },
+                result.Value);
         }
         
         return result.Message.Contains("already exists")
@@ -1702,7 +1702,7 @@ public async Task<PaymentReceipt> ProcessPaymentBad(PaymentRequest request)
         var authResult = await AuthorizePayment(request);
         if (authResult.Success)
         {
-            var captureResult = await CapturePayment(authResult.Data);
+            var captureResult = await CapturePayment(authResult.Value);
             if (captureResult.Success)
             {
                 // Gets deeply nested quickly
@@ -1821,7 +1821,7 @@ public static class ResultExtensions
         if (!result.Success)
             return result;
         
-        return predicate(result.Data) 
+        return predicate(result.Value) 
             ? result 
             : Result<T>.Fail(errorMessage);
     }
@@ -1893,8 +1893,8 @@ public class UserServiceTests
         
         // Assert
         Assert.IsTrue(result.Success);
-        Assert.IsNotNull(result.Data);
-        Assert.AreEqual(request.Email, result.Data.Email);
+        Assert.IsNotNull(result.Value);
+        Assert.AreEqual(request.Email, result.Value.Email);
         Assert.AreEqual("User created successfully", result.Message);
     }
     
@@ -1917,7 +1917,7 @@ public class UserServiceTests
         
         // Assert
         Assert.IsFalse(result.Success);
-        Assert.IsNull(result.Data);
+        Assert.IsNull(result.Value);
         Assert.IsTrue(result.Message.Contains("already exists"));
     }
     

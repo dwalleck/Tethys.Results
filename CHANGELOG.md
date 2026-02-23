@@ -5,6 +5,31 @@ All notable changes to the Tethys.Results package will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-02-23
+
+### Added
+- **`Then` extension** for `Result<TValue, TError>`: Monadic bind that chains operations on success, short-circuits on failure. Supports same-type and type-changing chains (e.g., `Result<int, E>` → `Result<string, E>`)
+- **`When` extension** for `Result<TValue, TError>`: Conditional bind — executes the operation only if the result is successful and the condition is true
+- **`Map` extension** for `Result<TValue, TError>`: Transforms the success value without requiring the caller to wrap in a `Result` (functor map)
+- **`ThenAsync` extension** for `Result<TValue, TError>`: Async bind with overloads for both `Result` and `Task<Result>` sources
+- **`WhenAsync` extension** for `Result<TValue, TError>`: Async conditional bind with overloads for both `Result` and `Task<Result>` sources
+- **`MapAsync` extension** for `Result<TValue, TError>`: Async value transformation with overloads for both `Result` and `Task<Result>` sources
+- **Null guards** on all delegate parameters — all extension methods throw `ArgumentNullException` for null callbacks, consistent with `Result<TValue, TError>.Match`/`MatchAsync`
+- **`Value` property** on `Result<T>`: Alias for the `Data` property, providing API consistency with `Result<TValue, TError>.Value`
+
+### Deprecated
+- **`Result<T>.Data`** — use `Value` instead. `Data` will be removed in a future major version.
+
+### Fixed
+- **Missing `ConfigureAwait(false)`** on all async `await` calls in `ResultExtensions.cs` (existing `Result`/`Result<T>` extensions) — prevents potential deadlocks when callers use `.Result` or `.Wait()` with a `SynchronizationContext`
+
+### Developer Notes
+- All new extension methods placed in `TypedResultExtensions.cs` to keep the two result families separated
+- Added 69 new tests covering sync, async, pipeline integration, short-circuit behavior, Task-source overloads, null-guard validation, exception propagation, null values, faulted/canceled tasks, delegate-throws, and operation-returns-failure scenarios
+- Total test count increased from 393 to 462
+- All internal code and tests migrated from `Data` to `Value`; `Data` remains as an `[Obsolete]` alias for backward compatibility
+- Used unified 3-type-parameter `Then<TValue, TNewValue, TError>` to avoid C# overload ambiguity when `TValue == TNewValue`
+
 ## [1.3.0] - 2026-02-23
 
 ### Added

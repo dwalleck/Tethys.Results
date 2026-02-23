@@ -25,10 +25,17 @@ namespace Tethys.Results
         public string Message { get; }
 
         /// <summary>
+        /// Gets the value returned by the operation.
+        /// </summary>
+        /// <value>The value when <see cref="Success"/> is <c>true</c>, or the default value of <typeparamref name="T"/> when <see cref="Success"/> is <c>false</c>.</value>
+        public T Value { get; }
+
+        /// <summary>
         /// Gets the data returned by the operation.
         /// </summary>
         /// <value>The data when <see cref="Success"/> is <c>true</c>, or the default value of <typeparamref name="T"/> when <see cref="Success"/> is <c>false</c>.</value>
-        public T Data { get; }
+        [Obsolete("Use Value instead. Data will be removed in a future major version.")]
+        public T Data => Value;
 
         /// <summary>
         /// Gets the exception that caused the operation to fail, if any.
@@ -47,7 +54,7 @@ namespace Tethys.Results
         {
             Success = success;
             Message = message ?? (success ? "Operation completed successfully" : "Operation failed");
-            Data = data;
+            Value = data;
             Exception = exception;
         }
 
@@ -159,7 +166,7 @@ namespace Tethys.Results
             if (failedResults.Count == 0)
             {
                 // Create a successful result with the collection of data values
-                return Result<IEnumerable<T>>.Ok(resultsList.Select(r => r.Data), "All operations completed successfully");
+                return Result<IEnumerable<T>>.Ok(resultsList.Select(r => r.Value), "All operations completed successfully");
             }
 
             var errorMessages = failedResults.Select(r => r.Message).ToList();
@@ -190,7 +197,7 @@ namespace Tethys.Results
         /// <returns>The data value if the result is successful; otherwise, the specified default value.</returns>
         public T GetValueOrDefault(T defaultValue = default)
         {
-            return Success ? Data : defaultValue;
+            return Success ? Value : defaultValue;
         }
 
         /// <summary>
@@ -200,7 +207,7 @@ namespace Tethys.Results
         /// <returns><c>true</c> if the result is successful; otherwise, <c>false</c>.</returns>
         public bool TryGetValue(out T value)
         {
-            value = Success ? Data : default;
+            value = Success ? Value : default;
             return Success;
         }
 
@@ -216,7 +223,7 @@ namespace Tethys.Results
                 throw Exception ?? new InvalidOperationException(Message);
             }
 
-            return Data;
+            return Value;
         }
 
         /// <summary>
@@ -259,7 +266,7 @@ namespace Tethys.Results
 
             return Success == other.Success &&
                    Message == other.Message &&
-                   EqualityComparer<T>.Default.Equals(Data, other.Data) &&
+                   EqualityComparer<T>.Default.Equals(Value, other.Value) &&
                    EqualityComparer<Exception>.Default.Equals(Exception, other.Exception);
         }
 
@@ -283,7 +290,7 @@ namespace Tethys.Results
             {
                 var hashCode = Success.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Message?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ EqualityComparer<T>.Default.GetHashCode(Data);
+                hashCode = (hashCode * 397) ^ EqualityComparer<T>.Default.GetHashCode(Value);
                 hashCode = (hashCode * 397) ^ (Exception?.GetHashCode() ?? 0);
                 return hashCode;
             }
@@ -338,7 +345,7 @@ namespace Tethys.Results
                 throw new ArgumentNullException(nameof(onFailure), "onFailure function cannot be null");
             }
 
-            return Success ? onSuccess(Data) : onFailure(Exception);
+            return Success ? onSuccess(Value) : onFailure(Exception);
         }
 
         /// <summary>
@@ -363,7 +370,7 @@ namespace Tethys.Results
                 throw new ArgumentNullException(nameof(onFailure), "onFailure function cannot be null");
             }
 
-            return Success ? await onSuccess(Data) : await onFailure(Exception);
+            return Success ? await onSuccess(Value) : await onFailure(Exception);
         }
 
         /// <summary>
@@ -387,7 +394,7 @@ namespace Tethys.Results
 
             try
             {
-                return Result<TNew>.Ok(mapper(Data), Message);
+                return Result<TNew>.Ok(mapper(Value), Message);
             }
             catch (Exception ex)
             {
@@ -416,7 +423,7 @@ namespace Tethys.Results
 
             try
             {
-                var newValue = await mapper(Data);
+                var newValue = await mapper(Value);
                 return Result<TNew>.Ok(newValue, Message);
             }
             catch (Exception ex)
@@ -446,7 +453,7 @@ namespace Tethys.Results
 
             try
             {
-                return mapper(Data);
+                return mapper(Value);
             }
             catch (Exception ex)
             {
@@ -475,7 +482,7 @@ namespace Tethys.Results
 
             try
             {
-                return await mapper(Data);
+                return await mapper(Value);
             }
             catch (Exception ex)
             {
@@ -496,7 +503,7 @@ namespace Tethys.Results
                 throw new ArgumentNullException(nameof(mapper), "mapper function cannot be null");
             }
 
-            return Success ? this : new Result<T>(false, Message, Data, mapper(Exception));
+            return Success ? this : new Result<T>(false, Message, Value, mapper(Exception));
         }
 
         /// <summary>
@@ -512,7 +519,7 @@ namespace Tethys.Results
                 throw new ArgumentNullException(nameof(mapper), "mapper function cannot be null");
             }
 
-            return Success ? this : new Result<T>(false, Message, Data, await mapper(Exception));
+            return Success ? this : new Result<T>(false, Message, Value, await mapper(Exception));
         }
 
         /// <summary>

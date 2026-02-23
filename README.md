@@ -129,7 +129,7 @@ var result = Result.Ok("Initial state")
 
 // Conditional execution with data
 var dataResult = Result<int>.Ok(10)
-    .When(true, () => Result<int>.Ok(20))
+    .When(true, value => Result<int>.Ok(20))
     .Then(value => Result<int>.Ok(value * 2)); // Results in 40
 ```
 
@@ -166,7 +166,7 @@ var dataResults = new List<Result<int>>
 var combinedData = Result<int>.Combine(dataResults);
 if (combinedData.Success)
 {
-    var sum = combinedData.Data.Sum(); // Sum is 6
+    var sum = combinedData.Value.Sum(); // Sum is 6
 }
 ```
 
@@ -225,6 +225,48 @@ Result<Order, OrderError> ProcessOrder(OrderRequest req)
 }
 ```
 
+### Chaining with Result&lt;TValue, TError&gt;
+
+```csharp
+// Chain validation/processing steps with typed errors
+Result<EfsTransaction, ReversalResult> pipeline = Validate(tracking)
+    .Then(txn => CheckWorkingDays(txn, 119))
+    .When(strategy == ReversalStrategy.RefundOnly, txn => ApplyRefund(txn))
+    .Then(txn => FinalizeReversal(txn));
+
+// Transform the value type while keeping the error type fixed
+Result<string, string> result = Result<int, string>.Ok(42)
+    .Then(v => Result<string, string>.Ok(v.ToString()))
+    .Map(s => $"The answer is: {s}");
+
+// Map transforms the value without wrapping in Result
+Result<string, string> mapped = Result<int, string>.Ok(5)
+    .Map(v => v.ToString());
+
+// Async pipelines chain naturally
+var asyncResult = await Result<int, string>.Ok(2)
+    .ThenAsync(async v =>
+    {
+        await Task.Delay(100);
+        return Result<int, string>.Ok(v + 3);
+    })
+    .ThenAsync(async v =>
+    {
+        await Task.Delay(100);
+        return Result<int, string>.Ok(v * 10);
+    });
+// asyncResult.Value == 50
+
+// Conditional async execution
+var applyBonus = true;
+var withBonus = await Result<int, string>.Ok(100)
+    .WhenAsync(applyBonus, async v =>
+    {
+        await Task.Delay(100);
+        return Result<int, string>.Ok(v * 2);
+    });
+```
+
 ## API Reference
 
 ### Result Class
@@ -233,7 +275,7 @@ Result<Order, OrderError> ProcessOrder(OrderRequest req)
 - `Result.Ok(string message)` - Creates a successful result with a message
 - `Result.Fail(string message)` - Creates a failed result with an error message
 - `Result.Fail(string message, Exception exception)` - Creates a failed result with message and exception
-- `Result.Fail(Exception exception)` - Creates a failed result from an exception
+- `Result.FromException(Exception exception)` - Creates a failed result from an exception
 - `Result.Combine(IEnumerable<Result> results)` - Combines multiple results into one
 
 ### Result<T> Class
@@ -242,10 +284,10 @@ Result<Order, OrderError> ProcessOrder(OrderRequest req)
 - `Result<T>.Ok(T value, string message)` - Creates a successful result with a value and message
 - `Result<T>.Fail(string message)` - Creates a failed result with an error message
 - `Result<T>.Fail(string message, Exception exception)` - Creates a failed result with message and exception
-- `Result<T>.Fail(Exception exception)` - Creates a failed result from an exception
+- `Result<T>.FromException(Exception exception)` - Creates a failed result from an exception
 - `Result<T>.Combine(IEnumerable<Result<T>> results)` - Combines multiple results with values
 
-### Extension Methods
+### Extension Methods (Result / Result&lt;T&gt;)
 
 - `Then(Func<Result> operation)` - Chains operations on successful results
 - `Then<T>(Func<Result<T>> operation)` - Chains operations that return values
@@ -255,6 +297,18 @@ Result<Order, OrderError> ProcessOrder(OrderRequest req)
 - `GetValueOrDefault(T defaultValue = default)` - Gets the value or a default
 - `TryGetValue(out T value)` - Tries to get the value using the Try pattern
 - `GetValueOrThrow()` - Gets the value or throws an exception
+
+### Extension Methods (Result&lt;TValue, TError&gt;)
+
+- `Then(Func<TValue, Result<TNewValue, TError>>)` - Monadic bind, value type may change
+- `When(bool, Func<TValue, Result<TValue, TError>>)` - Conditional bind
+- `Map(Func<TValue, TNewValue>)` - Transform value without Result wrapping
+- `ThenAsync(Func<TValue, Task<Result<TNewValue, TError>>>)` - Async bind
+- `ThenAsync` on `Task<Result<TValue, TError>>` - Chain from async source
+- `WhenAsync(bool, Func<TValue, Task<Result<TValue, TError>>>)` - Async conditional bind
+- `WhenAsync` on `Task<Result<TValue, TError>>` - Async conditional bind from async source
+- `MapAsync(Func<TValue, Task<TNewValue>>)` - Async value transformation
+- `MapAsync` on `Task<Result<TValue, TError>>` - Async value transformation from async source
 
 ## Advanced Usage
 

@@ -47,7 +47,7 @@ namespace Tethys.Test
             // Assert
             await Assert.That(result.Success).IsTrue();
             await Assert.That(result.Message).IsEqualTo("Success message");
-            await Assert.That(result.Data).IsEqualTo(testData);
+            await Assert.That(result.Value).IsEqualTo(testData);
             await Assert.That(result.Exception).IsNull();
         }
 
@@ -63,8 +63,27 @@ namespace Tethys.Test
             // Assert
             await Assert.That(result.Success).IsFalse();
             await Assert.That(result.Message).IsEqualTo("Error message");
-            await Assert.That(result.Data).IsEqualTo(default(string));
+            await Assert.That(result.Value).IsEqualTo(default(string));
             await Assert.That(result.Exception).IsEqualTo(exception);
+        }
+
+        [Test]
+        public async Task GenericResult_Value_ShouldReturnSameAsData()
+        {
+            var result = Result<string>.Ok("test value", "Success");
+
+            await Assert.That(result.Value).IsEqualTo("test value");
+#pragma warning disable CS0618 // Intentionally testing obsolete Data property alias
+            await Assert.That(result.Value).IsEqualTo(result.Data);
+#pragma warning restore CS0618
+        }
+
+        [Test]
+        public async Task GenericResult_Value_OnFailure_ShouldReturnDefault()
+        {
+            var result = Result<string>.Fail("error");
+
+            await Assert.That(result.Value).IsNull();
         }
 
         [Test]
@@ -140,7 +159,7 @@ namespace Tethys.Test
 
             // Assert
             await Assert.That(finalResult.Success).IsTrue();
-            await Assert.That(finalResult.Data).IsEqualTo("42");
+            await Assert.That(finalResult.Value).IsEqualTo("42");
             await Assert.That(finalResult.Message).IsEqualTo("Transformed data");
         }
 
