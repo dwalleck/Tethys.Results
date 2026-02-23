@@ -106,6 +106,43 @@ namespace Tethys.Results
         }
 
         /// <summary>
+        /// Creates a <see cref="Success{T}"/> wrapper for use with <see cref="Result{TValue, TError}"/>
+        /// implicit conversions. This provides unambiguous success tagging at the call site.
+        /// </summary>
+        /// <typeparam name="T">The type of the success value.</typeparam>
+        /// <param name="value">The success value to wrap.</param>
+        /// <returns>A <see cref="Success{T}"/> wrapper containing the value.</returns>
+        public static Success<T> Ok<T>(T value)
+        {
+            return new Success<T>(value);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Failure{T}"/> wrapper for use with <see cref="Result{TValue, TError}"/>
+        /// implicit conversions. This provides unambiguous failure tagging at the call site.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// When <typeparamref name="T"/> is <see cref="Exception"/> or a derived type,
+        /// this method captures the exception as a typed error value — it does NOT call
+        /// <see cref="Fail(string, Exception)"/>. Use <see cref="FromException"/> or
+        /// <see cref="Fail(string, Exception)"/> if you want a non-generic <see cref="Result"/>.
+        /// </para>
+        /// </remarks>
+        /// <typeparam name="T">The type of the error value.</typeparam>
+        /// <param name="error">The error value to wrap.</param>
+        /// <returns>A <see cref="Failure{T}"/> wrapper containing the error.</returns>
+        public static Failure<T> Fail<T>(T error)
+        {
+            if (error == null)
+            {
+                throw new ArgumentNullException(nameof(error), "Error value cannot be null. A failure must carry a meaningful error.");
+            }
+
+            return new Failure<T>(error);
+        }
+
+        /// <summary>
         /// Creates a failed result from an exception.
         /// </summary>
         /// <param name="exception">The exception that caused the operation to fail.</param>

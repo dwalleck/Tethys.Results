@@ -186,6 +186,30 @@ namespace Tethys.Results
         }
 
         /// <summary>
+        /// Implicitly converts a <see cref="Success{TValue}"/> wrapper to a successful
+        /// <see cref="Result{TValue, TError}"/>.
+        /// Use <c>Result.Ok(value)</c> to create the wrapper.
+        /// </summary>
+        /// <param name="success">The success wrapper containing the value.</param>
+        /// <returns>A successful result containing the value.</returns>
+        public static implicit operator Result<TValue, TError>(Success<TValue> success)
+        {
+            return Ok(success.Value);
+        }
+
+        /// <summary>
+        /// Implicitly converts a <see cref="Failure{TError}"/> wrapper to a failed
+        /// <see cref="Result{TValue, TError}"/>.
+        /// Use <c>Result.Fail(error)</c> to create the wrapper.
+        /// </summary>
+        /// <param name="failure">The failure wrapper containing the error.</param>
+        /// <returns>A failed result containing the error.</returns>
+        public static implicit operator Result<TValue, TError>(Failure<TError> failure)
+        {
+            return Fail(failure.Error);
+        }
+
+        /// <summary>
         /// Determines whether two results are equal.
         /// </summary>
         /// <param name="left">The first <see cref="Result{TValue, TError}"/> to compare.</param>

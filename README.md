@@ -204,18 +204,25 @@ catch (InvalidOperationException ex)
 ### Implicit Conversions
 
 ```csharp
-// Implicitly convert values to Results
+// Result<T> implicit conversions (unchanged)
 Result<int> implicitResult = 42; // Creates Result<int>.Ok(42)
 Result<string> stringResult = "Hello"; // Creates Result<string>.Ok("Hello")
 
-// Implicitly convert successful Results to values (throws if failed)
-Result<int> successResult = Result<int>.Ok(42);
-int value = successResult; // Gets 42
+// Result<TValue, TError> — use wrapper factories for unambiguous conversions
+Result<StatusSynced, StepFailed> success = Result.Ok(new StatusSynced("txn-456"));
+Result<StatusSynced, StepFailed> failure = Result.Fail(new StepFailed("step"));
 
-// Use in expressions
-Result<int> result1 = Result<int>.Ok(10);
-Result<int> result2 = Result<int>.Ok(20);
-int sum = result1 + result2; // Implicit conversion, sum is 30
+// Works even when TValue == TError (no CS0457 compiler error)
+Result<string, string> r1 = Result.Ok<string>("value");
+Result<string, string> r2 = Result.Fail<string>("error");
+
+// Method returns — intent is explicit at every call site
+Result<Order, OrderError> ProcessOrder(OrderRequest req)
+{
+    if (!req.IsValid)
+        return Result.Fail(new OrderError("Invalid request"));
+    return Result.Ok(new Order(req));
+}
 ```
 
 ## API Reference

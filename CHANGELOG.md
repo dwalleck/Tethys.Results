@@ -5,6 +5,40 @@ All notable changes to the Tethys.Results package will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-02-23
+
+### Added
+- **`Success<T>` wrapper struct**: Lightweight value type that tags a value as a success for unambiguous implicit conversion to `Result<TValue, TError>`
+- **`Failure<T>` wrapper struct**: Lightweight value type that tags a value as a failure for unambiguous implicit conversion to `Result<TValue, TError>`
+- **`Result.Ok<T>(T value)` factory method**: Creates a `Success<T>` wrapper for use with implicit conversions
+- **`Result.Fail<T>(T error)` factory method**: Creates a `Failure<T>` wrapper for use with implicit conversions
+- Implicit operators on `Result<TValue, TError>` from `Success<TValue>` and `Failure<TError>`, enabling `return Result.Ok(value)` and `return Result.Fail(error)` in methods returning `Result<TValue, TError>`
+
+### Fixed
+- **CS0457 compiler error** when `TValue` and `TError` are the same type (e.g., `Result<string, string>`) — wrapper pattern eliminates the ambiguity that direct implicit operators would cause
+- **Inheritance ambiguity** with assignable types (e.g., `Result<object, string>`) — `Result.Ok(value)` and `Result.Fail(error)` make intent explicit at every call site
+
+### Developer Notes
+- Added 49 new tests for wrapper-based implicit conversions
+- Total test count increased from 344 to 393
+- All existing `Result<TValue, TError>.Ok()` and `.Fail()` static methods remain unchanged
+
+## [1.2.0] - 2026-02-09
+
+### Added
+- **`Result<TValue, TError>` type**: New typed result class for operations that return a specific success value or a specific error type, enabling strongly-typed error handling without exceptions
+  - `Ok(TValue value)` - Creates a successful result with a value
+  - `Fail(TError error)` - Creates a failed result with a typed error
+  - `Match<TResult>` - Pattern matching for success/failure handling
+  - `MatchAsync<TResult>` - Async pattern matching
+  - Full equality support (`IEquatable<T>`, `==`, `!=`, `GetHashCode`)
+  - Thread-safe, immutable implementation
+
+### Developer Notes
+- Added 28 new tests for `Result<TValue, TError>`
+- Total test count increased from 316 to 344
+- Maintained 100% backward compatibility with existing `Result` and `Result<T>` types
+
 ## [1.1.0] - 2025-07-05
 
 ### Added
